@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/payerFragment">
+
+    <fragment
+        android:id="@+id/payerFragment"
+        android:name="com.mesutyukselusta.katlmevimicratakip.view.PayerFragment"
+        android:label="Borçlu Listesi" >
+        <action
+            android:id="@+id/action_payerFragment_to_payerInformationFragment"
+            app:destination="@id/payerInformationFragment"
+            app:enterAnim="@anim/from_right" />
+        <action
+            android:id="@+id/action_payerFragment_to_createPayerFragment"
+            app:destination="@id/createPayerFragment"
+            app:enterAnim="@anim/from_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/openingCostsFragment"
+        android:name="com.mesutyukselusta.katlmevimicratakip.view.CostsFragment"
+        android:label="Ek Masraflar"
+        tools:layout="@layout/fragment_opening_costs" >
+        <action
+            android:id="@+id/action_openingCostsFragment_to_addCostFragment"
+            app:destination="@id/addCostFragment"
+            app:enterAnim="@anim/from_up" />
+        <argument
+            android:name="uuid"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_openingCostsFragment_to_costsDetailFragment"
+            app:destination="@id/costsDetailFragment"
+            app:enterAnim="@anim/from_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/payerInformationFragment"
+        android:name="com.mesutyukselusta.katlmevimicratakip.view.PayerDetailsFragment"
+        android:label="Borçlu Detayı"
+        tools:layout="@layout/fragment_payer_details" >
+        <action
+            android:id="@+id/action_payerInformationFragment_to_openingCostsFragment"
+            app:destination="@id/openingCostsFragment"
+            app:enterAnim="@anim/from_right" />
+        <argument
+            android:name="uuid"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <action
+            android:id="@+id/action_payerInformationFragment_to_costCalculateFragment"
+            app:destination="@id/costCalculateFragment"
+            app:enterAnim="@anim/from_up" />
+    </fragment>
+    <fragment
+        android:id="@+id/addCostFragment"
+        android:name="com.mesutyukselusta.katlmevimicratakip.view.AddCostFragment"
+        android:label="Ek Masraf Ekle"
+        tools:layout="@layout/fragment_add_cost" >
+        <argument
+            android:name="uuid"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+    <fragment
+        android:id="@+id/createPayerFragment"
+        android:name="com.mesutyukselusta.katlmevimicratakip.view.CreatePayerFragment"
+        android:label="Borçlu Oluştur"
+        tools:layout="@layout/fragment_create_payer" >
+        <action
+            android:id="@+id/action_createPayerFragment_to_payerFragment"
+            app:destination="@id/payerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/costsDetailFragment"
+        android:name="com.mesutyukselusta.katlmevimicratakip.view.CostsDetailsFragment"
+        android:label="Ek Masrafı Güncelle"
+        tools:layout="@layout/fragment_costs_detail" >
+        <argument
+            android:name="cost_uuid"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_costsDetailFragment_to_openingCostsFragment"
+            app:destination="@id/openingCostsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/costCalculateFragment"
+        android:name="com.mesutyukselusta.katlmevimicratakip.view.CostCalculateFragment"
+        android:label="Dosya Kapama Hesaplamalar"
+        tools:layout="@layout/fragment_cost_calculate">
+        <argument
+            android:name="uuid"
+            android:defaultValue="-1"
+            app:argType="integer" />
+    </fragment>
+</navigation>

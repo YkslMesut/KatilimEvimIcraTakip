@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/bg1"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".view.PayerDetailsFragment">
+
+    <LinearLayout
+        android:layout_margin="10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="İsim Soyisim :"
+            android:textColor="@color/text_color"
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_marginStart="10dp"
+            android:textColor="@color/text_color"
+            android:id="@+id/payerNameSurname"
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="5dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="Dosya Esas Numarası :"
+            android:textColor="@color/text_color"
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_marginStart="5dp"
+            android:textColor="@color/text_color"
+            android:id="@+id/txtDocumentNo"
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="5dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="Dosya Açılış Tarihi :"
+            android:textColor="@color/text_color"
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_marginStart="5dp"
+            android:textColor="@color/text_color"
+            android:id="@+id/txtDocumentCreatedDay"
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="Ana Borç : "
+            android:textColor="@color/text_color"
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:textSize="17dp"
+            android:textColor="@color/text_color"
+            android:id="@+id/etMainDebt"
+            android:fontFamily="sans-serif-black"
+            android:hint="Ana Borcu Giriniz"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="Faiz : "
+            android:textColor="@color/text_color"
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:textColor="@color/text_color"
+            android:id="@+id/txtInterest"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="Vekalet : "
+            android:textColor="@color/text_color"
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/etProxy"
+            android:textColor="@color/text_color"
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:inputType="number"
+            android:hint="Vekaleti Giriniz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/viewCosts"
+        android:layout_margin="5dp"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg2"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="Masraflar : "
+            android:textColor="@color/text_color"
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/txtCosts"
+            android:textColor="@color/text_color"
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="Tahsil Harcı : "
+            android:textColor="@color/text_color"
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:fontFamily="sans-serif-black"
+            android:textSize="17dp"
+            android:inputType="number"
+            android:id="@+id/txtTuitionFee"
+            android:textColor="@color/text_color"
+            android:hint="Tahsil Harcını Giriniz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/checkBoxIsForeclosure"
+        android:layout_margin="10dp"
+        android:textSize="15dp"
+        android:text="Haciz Varsa Kutucuğu işaretleyiniz."
+        android:textColor="@color/text_color"
+        android:fontFamily="sans-serif-black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <Button
+        android:id="@+id/showCalculates"
+        android:background="@drawable/bg2"
+        android:textColor="@color/text_color"
+        android:layout_gravity="center"
+        android:textSize="18dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="50dp"
+        android:text="Hesaplamaları Göster"
+        android:layout_width="match_parent"
+        android:layout_height="75dp" />
+
+
+    <Button
+        android:id="@+id/btnUpdate"
+        android:background="@drawable/bg2"
+        android:textColor="@color/text_color"
+        android:layout_gravity="center"
+        android:textSize="18dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:text="Güncelle"
+        android:layout_width="match_parent"
+        android:layout_height="75dp" />
+
+</LinearLayout>
