@@ -137,6 +137,7 @@ class CreatePayerFragment : Fragment(), DatePickerDialog.OnDateSetListener{
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 Toast.makeText(requireContext(),p0?.getItemAtPosition(p2).toString(), Toast.LENGTH_LONG).show()
+                // Document Type Select And Bill Control
                 when (p2) {
                     0 -> {
                         binding.etDocumentType.visibility = View.INVISIBLE
