@@ -1,12 +1,14 @@
 package com.mesutyukselusta.katlmevimicratakip.view
 
+import android.R
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
+import android.widget.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -27,6 +29,8 @@ class CreatePayerFragment : Fragment(), DatePickerDialog.OnDateSetListener{
 
     private lateinit var createdMainDebtTextWatcher: MoneyTextWatcher
     private lateinit var trackingAmountTextWatcher: MoneyTextWatcher
+
+    private lateinit var documentTypeSpinner: Spinner
 
     private lateinit var name : String
     private lateinit var surName : String
@@ -51,7 +55,10 @@ class CreatePayerFragment : Fragment(), DatePickerDialog.OnDateSetListener{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
          viewModel = ViewModelProvider(this).get(CreatePayerFragmentViewModel::class.java)
+
+        spinnerView()
 
         createdMainDebtTextWatcher = MoneyTextWatcher(binding.etCreatedMainDebt)
         binding.etCreatedMainDebt.addTextChangedListener(createdMainDebtTextWatcher)
@@ -88,13 +95,13 @@ class CreatePayerFragment : Fragment(), DatePickerDialog.OnDateSetListener{
 
         name = binding.etName.text.toString()
         surName = binding.etSurname.text.toString()
-        documentType = binding.etDocumentType.text.toString()
+        if (binding.etDocumentType.isVisible){
+            documentType = binding.etDocumentType.text.toString() }
         documentNo = binding.etDocumentNo.text.toString()
         documentYear = binding.etDocumentYear.text.toString()
         documentYear = binding.etDocumentYear.text.toString()
         createdMainDebt = binding.etCreatedMainDebt.text.toString()
         trackingAmount = binding.etTrackingAmount.text.toString()
-        documentTypeIsBill = binding.checkBoxDocumentTypeIsBill.isChecked
 
     }
 
@@ -113,6 +120,61 @@ class CreatePayerFragment : Fragment(), DatePickerDialog.OnDateSetListener{
         dateYear = year
         binding.txtDate.text = "$dateDay/$dateMonth/$dateYear"
 
+    }
+
+    private fun spinnerView(){
+        documentTypeSpinner = binding.documentTypeList
+
+        val typeList: MutableList<String> = mutableListOf("Rehin","İlamsız","Senet","İpotek","Diğer")
+
+        val adapter = ArrayAdapter(requireContext(), R.layout.simple_spinner_item,typeList)
+
+        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+
+        documentTypeSpinner.adapter= adapter
+
+        documentTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                Toast.makeText(requireContext(),p0?.getItemAtPosition(p2).toString(), Toast.LENGTH_LONG).show()
+                when (p2) {
+                    0 -> {
+                        binding.etDocumentType.visibility = View.INVISIBLE
+                        binding.etDocumentType.setText("")
+                        documentType = p0?.getItemAtPosition(p2).toString()
+                        documentTypeIsBill = false
+                    }
+                    1 -> {
+                        binding.etDocumentType.visibility = View.INVISIBLE
+                        binding.etDocumentType.setText("")
+                        documentType = p0?.getItemAtPosition(p2).toString()
+                        documentTypeIsBill = false
+                    }
+                    2 -> {
+                        binding.etDocumentType.visibility = View.INVISIBLE
+                        binding.etDocumentType.setText("")
+                        documentType = p0?.getItemAtPosition(p2).toString()
+                        documentTypeIsBill = true
+                    }
+                    3 -> {
+                        binding.etDocumentType.visibility = View.INVISIBLE
+                        binding.etDocumentType.setText("")
+                        documentType = p0?.getItemAtPosition(p2).toString()
+                        documentTypeIsBill = false
+                    }
+                    4 -> {
+                        binding.etDocumentType.visibility = View.VISIBLE
+                        binding.etDocumentType.setText("")
+                        documentTypeIsBill = false
+                        documentType = ""
+                    }
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO()
+            }
+        }
     }
 
 }

@@ -28,7 +28,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-
     <LinearLayout
         android:layout_margin="10dp"
         android:layout_width="match_parent"
@@ -55,16 +54,6 @@
     </LinearLayout>
 
     <EditText
-        android:textColor="@color/text_color"
-        android:layout_margin="10dp"
-        android:fontFamily="sans-serif-black"
-        android:textSize="15dp"
-        android:id="@+id/etDocumentType"
-        android:hint="Takip Tipini Giriniz"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <EditText
         android:layout_margin="10dp"
         android:textColor="@color/text_color"
         android:id="@+id/etCreatedMainDebt"
@@ -85,7 +74,6 @@
         android:hint="Takip Kesinleşme Miktarını giriniz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-
 
     <LinearLayout
         android:layout_margin="10dp"
@@ -132,15 +120,32 @@
 
     </LinearLayout>
 
-    <CheckBox
-        android:id="@+id/checkBoxDocumentTypeIsBill"
+    <LinearLayout
         android:layout_margin="10dp"
-        android:textSize="15dp"
-        android:text="Senet(Faiz %15,75'den hesaplanıyorsa ise işaretleyiniz)"
-        android:textColor="@color/text_color"
-        android:fontFamily="sans-serif-black"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <Spinner
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:layout_gravity="center"
+            android:id="@+id/documentTypeList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:textColor="@color/text_color"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-black"
+            android:textSize="15dp"
+            android:id="@+id/etDocumentType"
+            android:hint="Takip Tipini Giriniz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
     <Button
         android:textColor="@color/text_color"
