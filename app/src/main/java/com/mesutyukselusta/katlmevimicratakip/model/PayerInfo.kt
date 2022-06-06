@@ -34,7 +34,7 @@ data class PayerInfo(
 
     @ColumnInfo(name = "interest")
     @SerializedName("interest")
-    val interest: Int?,
+    var interest: Int?,
 
     @ColumnInfo(name = "proxy_cost")
     @SerializedName("proxy_cost")

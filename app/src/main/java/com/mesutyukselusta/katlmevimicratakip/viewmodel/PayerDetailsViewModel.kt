@@ -20,6 +20,9 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
     fun getPayer(uuid : Int) {
         launch {
             val payer = PayerDatabase(getApplication()).payerDao().getPayerInfoWithCosts(uuid)
+            // Update Interest
+            payer.payerInfo.interest = calculateInterest(payer.payerInfo.created_main_debt!!,
+                payer.payerInfo.document_type_is_bill!!,payer.payerInfo.document_creation_date!!)
             showPayers(payer)
         }
     }
