@@ -9,7 +9,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.1365" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/fragment_add_cost.xml" value="0.19610507246376813" />
-        <entry key="app/src/main/res/layout/fragment_cost_calculate.xml" value="0.14791666666666667" />
+        <entry key="app/src/main/res/layout/fragment_cost_calculate.xml" value="0.24424387613932289" />
         <entry key="app/src/main/res/layout/fragment_cost_detail.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/fragment_costs_detail.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_create_payer.xml" value="0.19610507246376813" />

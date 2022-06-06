@@ -80,6 +80,8 @@ class CostCalculateFragment : Fragment(),DatePickerDialog.OnDateSetListener {
         binding.txtKatilimCost.text = costAmountCastingFor(moneyToBeSent!!.costs.toString())
         binding.txtKatilimInterest.text = costAmountCastingFor(moneyToBeSent!!.interest.toString())
         binding.txtTotalDept.text = costAmountCastingFor(moneyToBeSent!!.total_debt.toString())
+        binding.txtKatilimCostAndInterest.text = costAmountCastingFor((moneyToBeSent.costs + moneyToBeSent.interest).toString())
+
     }
     private fun showDatePicker() {
         val datePickerDialog = DatePickerDialog(requireContext(),

@@ -55,7 +55,7 @@
 
     <LinearLayout
         android:id="@+id/viewCalculated"
-        android:visibility="gone"
+        android:visibility="visible"
          android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:orientation="vertical"
@@ -116,6 +116,27 @@
                 android:text="Katılım evine gönderilicek Masraf"/>
             <TextView
                 android:id="@+id/txtKatilimCost"
+                android:textSize="15dp"
+                android:fontFamily="sans-serif-black"
+                android:textColor="@color/text_color"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color"
+                android:fontFamily="sans-serif-black"
+                android:textSize="15dp"
+                android:text="Katılım evine gönderilicek Faiz + Masraf"/>
+            <TextView
+                android:id="@+id/txtKatilimCostAndInterest"
                 android:textSize="15dp"
                 android:fontFamily="sans-serif-black"
                 android:textColor="@color/text_color"
