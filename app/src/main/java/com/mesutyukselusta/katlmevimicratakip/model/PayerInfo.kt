@@ -67,6 +67,10 @@ data class PayerInfo(
     @ColumnInfo(name = "tracking_amount")
     @SerializedName("tracking_amount")
     val tracking_amount : Int?,
+
+    @ColumnInfo(name = "document_status")
+    @SerializedName("document_status")
+    var document_status : String?,
 ){
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "uuid")

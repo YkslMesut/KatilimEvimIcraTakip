@@ -65,7 +65,7 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
                     Integer.parseInt(proxyClean),
                     Integer.parseInt(mCost),
                     tuitionFeeClean,selectedPayerInfo.document_creation_date,selectedPayerInfo.document_type_is_bill,
-                    selectedPayerInfo.created_main_debt,isForeClosure,selectedPayerInfo.tracking_amount)
+                    selectedPayerInfo.created_main_debt,isForeClosure,selectedPayerInfo.tracking_amount,selectedPayerInfo.document_status)
                 newPayer.uuid = selectedPayerInfo.uuid
                 launch {
                     PayerDatabase(getApplication()).payerDao().updatePayer(newPayer)

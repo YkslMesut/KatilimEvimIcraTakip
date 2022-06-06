@@ -1,5 +1,7 @@
 package com.mesutyukselusta.katlmevimicratakip.view
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mesutyukselusta.katlmevimicratakip.R
 import com.mesutyukselusta.katlmevimicratakip.adapter.PayerAdapter
 import com.mesutyukselusta.katlmevimicratakip.databinding.FragmentPayerBinding
+import com.mesutyukselusta.katlmevimicratakip.model.PayerInfo
 import com.mesutyukselusta.katlmevimicratakip.util.SwipeGesture
 import com.mesutyukselusta.katlmevimicratakip.viewmodel.PayerFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_payer.*
@@ -77,7 +80,8 @@ class PayerFragment : Fragment() {
                 when(direction){
                     ItemTouchHelper.LEFT ->{
                         val item = payerAdapter.getPayerFromPosition(viewHolder.adapterPosition)
-                        viewModel.deletePayerFromRoom(item.uuid)
+                        val documentStateAlertDialog = documentStateDialog(item)
+                        documentStateAlertDialog.show()
                     }
                     ItemTouchHelper.RIGHT ->{
                         val item = payerAdapter.getPayerFromPosition(viewHolder.adapterPosition)
@@ -107,7 +111,6 @@ class PayerFragment : Fragment() {
                 recyclerView.visibility = View.VISIBLE
                 payerAdapter.updatePayerAdapter(it)
             }
-
         }
 
         viewModel.payersError.observe(viewLifecycleOwner, Observer { error->
@@ -147,6 +150,26 @@ class PayerFragment : Fragment() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun documentStateDialog(selectedPayer : PayerInfo) : AlertDialog {
+        val alert = AlertDialog.Builder(requireContext())
+            .setMessage("Dosya Durumunu Seçiniz")
+            .setPositiveButton("Avans İadesi Bekleniyor") { dialog, which ->
+                viewModel.updateDocumentStatus(selectedPayer, "avans_iade")
+                dialog.dismiss()
+            }
+            .setNegativeButton("Dosya Kapandı") { dialog, which ->
+                viewModel.updateDocumentStatus(selectedPayer, "dosya_kapandı")
+
+                dialog.dismiss()
+            }
+            .setOnCancelListener {
+                viewModel.getAllPayersFromRoom()
+            }
+            .create()
+
+        return alert
     }
 
 

@@ -31,4 +31,12 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
             getAllPayersFromRoom()
         }
     }
+
+    fun updateDocumentStatus(payerInfo : PayerInfo,documentStatus : String) {
+        launch {
+            payerInfo.document_status = documentStatus
+            PayerDatabase(getApplication()).payerDao().updatePayer(payerInfo)
+            getAllPayersFromRoom()
+        }
+    }
 }

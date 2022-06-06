@@ -39,7 +39,9 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
                             dateMonth : Int, dateYear : Int,documentTypeIsBill: Boolean,createdMainDebt: Int,trackingAmount : Int){
         Log.d(TAG, "insertPayer: InsertPayerFunc")
         val createDay = "$dateDay/$dateMonth/$dateYear"
-        val payerInfo = PayerInfo(name,surname,documentNo,documentYear,documentType,null,null,null,null,null,createDay,documentTypeIsBill,createdMainDebt,false,trackingAmount)
+        val payerInfo = PayerInfo(name,surname,documentNo,documentYear,documentType,null,null,null,
+            null,null,createDay,documentTypeIsBill,createdMainDebt,
+            false,trackingAmount,"new_document")
         payerInfo.tuition_fee = payerInfo.calculateTuitionFee(trackingAmount,false,0)
         val dao = PayerDatabase(getApplication()).payerDao()
         launch {

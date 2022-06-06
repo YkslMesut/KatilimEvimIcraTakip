@@ -1,6 +1,7 @@
 package com.mesutyukselusta.katlmevimicratakip.adapter
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.mesutyukselusta.katlmevimicratakip.R
 import com.mesutyukselusta.katlmevimicratakip.databinding.RowPayerListBinding
 import com.mesutyukselusta.katlmevimicratakip.model.PayerInfo
 import java.util.*
@@ -41,6 +43,13 @@ class PayerAdapter(private val payerList : ArrayList<PayerInfo>): RecyclerView.A
             itemBinding.txtDocumentId.text = payerInfo.document_year.toString()+"-"+payerInfo.document_no.toString()
             itemBinding.txtDocumentType.text = payerInfo.document_type
             itemBinding.containerUuid.text = payerInfo.uuid.toString()
+
+            if (payerInfo.document_status.equals("avans_iade")){
+                itemBinding.container.setBackgroundColor(Color.YELLOW)
+            } else if (payerInfo.document_status.equals("dosya_kapandı")){
+                itemBinding.container.setBackgroundColor(Color.RED)
+            }
+
         }
         init{
             itemView.setOnClickListener {
