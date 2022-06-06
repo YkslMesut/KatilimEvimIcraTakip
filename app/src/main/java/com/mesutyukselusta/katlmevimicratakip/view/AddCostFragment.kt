@@ -1,5 +1,6 @@
 package com.mesutyukselusta.katlmevimicratakip.view
 
+import android.R
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.TextWatcher
@@ -7,9 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -28,6 +28,8 @@ class AddCostFragment : Fragment(),DatePickerDialog.OnDateSetListener {
     private lateinit var viewModel : AddCostViewModel
 
     private lateinit var textWatcher: MoneyTextWatcher
+
+    private lateinit var documentTypeSpinner: Spinner
 
     private lateinit var costName : String
     private lateinit var costAmount : String
@@ -51,6 +53,8 @@ class AddCostFragment : Fragment(),DatePickerDialog.OnDateSetListener {
         arguments?.let {
             selectedUuid = AddCostFragmentArgs.fromBundle(it).uuid
         }
+
+        spinnerView()
 
         binding.btnAddCosts.setOnClickListener {
 
@@ -92,10 +96,9 @@ class AddCostFragment : Fragment(),DatePickerDialog.OnDateSetListener {
     }
 
     private fun takeInfoFromEditTexts() {
-        costName = binding.etCostName.text.toString()
+        if (binding.etCostType.isVisible){
+            costName = binding.etCostType.text.toString() }
         costAmount = binding.etAmountOfExpense.text.toString()
-        isAdvanceFee = binding.checkBoxIsAdvanceFee.isChecked
-        isProtestCost = binding.checkBoxIsProtestCost.isChecked
     }
     private fun showDatePicker() {
         val datePickerDialog = DatePickerDialog(requireContext(),
@@ -114,6 +117,65 @@ class AddCostFragment : Fragment(),DatePickerDialog.OnDateSetListener {
 
     }
 
+    private fun spinnerView(){
+        documentTypeSpinner = binding.costTypeList
+
+        val typeList: MutableList<String> = mutableListOf("Peşin Harcı","İhtarname Masrafı","Yakalama avansı","Masraf açılış","Diğer")
+
+        val adapter = ArrayAdapter(requireContext(), R.layout.simple_spinner_item,typeList)
+
+        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+
+        documentTypeSpinner.adapter= adapter
+
+        documentTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                Toast.makeText(requireContext(),p0?.getItemAtPosition(p2).toString(), Toast.LENGTH_LONG).show()
+                // Document Type Select And Bill Control
+                when (p2) {
+                    0 -> {
+                        binding.etCostType.visibility = View.INVISIBLE
+                        binding.etCostType.setText("")
+                        costName = p0?.getItemAtPosition(p2).toString()
+                        isAdvanceFee = true
+                        isProtestCost = false
+                    }
+                    1 -> {
+                        binding.etCostType.visibility = View.INVISIBLE
+                        binding.etCostType.setText("")
+                        costName = p0?.getItemAtPosition(p2).toString()
+                        isAdvanceFee = false
+                        isProtestCost = true
+                    }
+                    2 -> {
+                        binding.etCostType.visibility = View.INVISIBLE
+                        binding.etCostType.setText("")
+                        costName = p0?.getItemAtPosition(p2).toString()
+                        isAdvanceFee = false
+                        isProtestCost = false
+                    }
+                    3 -> {
+                        binding.etCostType.visibility = View.INVISIBLE
+                        binding.etCostType.setText("")
+                        costName = p0?.getItemAtPosition(p2).toString()
+                        isAdvanceFee = false
+                        isProtestCost = false
+                    }
+                    4 -> {
+                        binding.etCostType.visibility = View.VISIBLE
+                        binding.etCostType.setText("")
+                        isAdvanceFee = false
+                        isProtestCost = false
+                    }
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO()
+            }
+        }
+    }
 
 
 }

@@ -8,15 +8,34 @@
     android:layout_height="match_parent"
     tools:context=".view.AddCostFragment">
 
-    <EditText
+
+    <LinearLayout
         android:layout_margin="10dp"
-        android:fontFamily="sans-serif-black"
-        android:textSize="15dp"
-        android:textColor="@color/text_color"
-        android:hint="Lütfen Masraf Tipinizi Giriniz"
-        android:id="@+id/etCostName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <Spinner
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:layout_gravity="center"
+            android:id="@+id/costTypeList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:textColor="@color/text_color"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-black"
+            android:textSize="15dp"
+            android:id="@+id/etCostType"
+            android:hint="Takip Tipini Giriniz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
 
     <EditText
         android:hint="Lütfen Masraf Miktarını Giriniz"
@@ -73,26 +92,6 @@
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
-
-    <CheckBox
-        android:id="@+id/checkBoxIsAdvanceFee"
-        android:layout_margin="10dp"
-        android:textSize="15dp"
-        android:text="Masraf Tipi Peşin Harcı ise Lütfen İşaretleyiniz."
-        android:textColor="@color/text_color"
-        android:fontFamily="sans-serif-black"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <CheckBox
-        android:id="@+id/checkBoxIsProtestCost"
-        android:layout_margin="10dp"
-        android:textSize="15dp"
-        android:text="İhtarname Masrafı ise Lütfen İşaretleyiniz."
-        android:textColor="@color/text_color"
-        android:fontFamily="sans-serif-black"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
     <Button
         android:layout_margin="50dp"
