@@ -37,10 +37,15 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
         payerLiveData.value = payer
     }
 
-    fun updatePayer(payerWithCosts : PayerInfoWithCosts,mainDebt : String,proxy : String,isForeClosure : Boolean ,costs : String){
+    fun updatePayer(payerWithCosts : PayerInfoWithCosts,mainDebt : String,
+                    proxy : String,isForeClosure : Boolean ,costs : String){
+
         if (payerWithCosts != null && mainDebt.isNotEmpty()  && proxy.isNotEmpty()){
+
             val  mainDebtClean = cleanCastingAmountText(mainDebt)
+
             if (payerWithCosts.payerInfo.created_main_debt!! >= Integer.parseInt(mainDebtClean)){
+
                 val costsClean = cleanCastingAmountText(costs)
                 var mCost = costsClean
                 if (mCost.isEmpty()){
@@ -50,13 +55,17 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
                 val selectedPayerInfo = payerWithCosts.payerInfo
                 val proxyClean = cleanCastingAmountText(proxy)
                 val advanceFee = calculateAdvanceFee(payerWithCosts.costs)
-                val tuitionFeeClean = payerWithCosts.payerInfo.calculateTuitionFee(payerWithCosts.payerInfo.tracking_amount,isForeClosure,advanceFee)
+                val tuitionFeeClean = payerWithCosts.payerInfo.calculateTuitionFee(payerWithCosts.payerInfo.tracking_amount,
+                    isForeClosure,advanceFee)
                 val newPayer = PayerInfo(selectedPayerInfo.name,selectedPayerInfo.surname,
-                    selectedPayerInfo.document_no,selectedPayerInfo.document_year,selectedPayerInfo.document_type,Integer.parseInt(mainDebtClean),
-                    calculateInterest(selectedPayerInfo.created_main_debt!!,selectedPayerInfo.document_type_is_bill!!,selectedPayerInfo.document_creation_date!!),
+                    selectedPayerInfo.document_no,selectedPayerInfo.document_year,
+                    selectedPayerInfo.document_type,Integer.parseInt(mainDebtClean),
+                    calculateInterest(selectedPayerInfo.created_main_debt!!,selectedPayerInfo.document_type_is_bill!!,
+                        selectedPayerInfo.document_creation_date!!),
                     Integer.parseInt(proxyClean),
                     Integer.parseInt(mCost),
-                    tuitionFeeClean,selectedPayerInfo.document_creation_date,selectedPayerInfo.document_type_is_bill,selectedPayerInfo.created_main_debt,isForeClosure,selectedPayerInfo.tracking_amount)
+                    tuitionFeeClean,selectedPayerInfo.document_creation_date,selectedPayerInfo.document_type_is_bill,
+                    selectedPayerInfo.created_main_debt,isForeClosure,selectedPayerInfo.tracking_amount)
                 newPayer.uuid = selectedPayerInfo.uuid
                 launch {
                     PayerDatabase(getApplication()).payerDao().updatePayer(newPayer)
