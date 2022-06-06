@@ -20,10 +20,16 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
     fun getPayer(uuid : Int) {
         launch {
             val payer = PayerDatabase(getApplication()).payerDao().getPayerInfoWithCosts(uuid)
-            // Update Interest
-            payer.payerInfo.interest = calculateInterest(payer.payerInfo.created_main_debt!!,
+            // Control Interest
+            val calculatedInterest = calculateInterest(payer.payerInfo.created_main_debt!!,
                 payer.payerInfo.document_type_is_bill!!,payer.payerInfo.document_creation_date!!)
-            showPayers(payer)
+
+            if (calculatedInterest != payer.payerInfo.interest){
+                updateInterest(payer,calculatedInterest)
+            } else {
+                PayerDatabase(getApplication()).payerDao().updatePayer(payer.payerInfo)
+                showPayers(payer)
+            }
         }
     }
 
@@ -110,4 +116,15 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
         cleanText = cleanText.replace(".","")
         return cleanText
     }
+
+    private fun updateInterest(payerWithCosts: PayerInfoWithCosts, updatedInterest : Int){
+
+        launch {
+            payerWithCosts.payerInfo.interest = updatedInterest
+            PayerDatabase(getApplication()).payerDao().updatePayer(payerWithCosts.payerInfo)
+            showPayers(payerWithCosts)
+        }
+
+    }
+
 }
