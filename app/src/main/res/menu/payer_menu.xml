@@ -5,4 +5,7 @@
     <item
         android:id="@+id/add_payer"
         android:title="Borçlu Ekle"/>
+    <item
+        android:id="@+id/logout"
+        android:title="Çıkış"/>
 </menu>
