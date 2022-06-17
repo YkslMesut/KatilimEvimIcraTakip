@@ -7,8 +7,8 @@ import androidx.room.Relation
 class PayerInfoWithCosts(
     @Embedded val payerInfo : PayerInfo,
     @Relation(
-        parentColumn = "uuid",
-        entityColumn = "uuid"
+        parentColumn = "firestore_document_no",
+        entityColumn = "firestore_document_no"
     )
     val costs : List<Costs>
     ){

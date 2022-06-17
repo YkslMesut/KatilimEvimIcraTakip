@@ -25,9 +25,9 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
         payersLoading.value = false
     }
 
-    fun deletePayerFromRoom(uuid : Int){
+    fun deletePayerFromRoom(fireStoreDocumentNo : String){
         launch {
-            PayerDatabase(getApplication()).payerDao().deletePayer(uuid)
+            PayerDatabase(getApplication()).payerDao().deletePayer(fireStoreDocumentNo)
             getAllPayersFromRoom()
         }
     }

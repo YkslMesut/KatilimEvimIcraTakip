@@ -30,7 +30,7 @@ class PayerDetailsFragment : Fragment() {
     private lateinit var mainDebtTextWatcher: MoneyTextWatcher
     private lateinit var proxyTextWatcher: MoneyTextWatcher
 
-    private var selectedUuid = 0
+    private lateinit var fireStoreDocumentNo : String
 
 
 
@@ -47,8 +47,8 @@ class PayerDetailsFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(PayerDetailsViewModel::class.java)
 
         arguments?.let {
-            selectedUuid = PayerDetailsFragmentArgs.fromBundle(it).uuid
-            viewModel.getPayer(selectedUuid)
+            fireStoreDocumentNo = PayerDetailsFragmentArgs.fromBundle(it).fireStoreDocumentNo
+            viewModel.getPayer(fireStoreDocumentNo)
 
         }
 
@@ -75,14 +75,14 @@ class PayerDetailsFragment : Fragment() {
         }
 
         binding.viewCosts.setOnClickListener {
-            Log.d(TAG, "onViewCreated: "+selectedUuid)
-            val action = PayerDetailsFragmentDirections.actionPayerInformationFragmentToOpeningCostsFragment(selectedUuid)
+            Log.d(TAG, "onViewCreated: "+fireStoreDocumentNo)
+            val action = PayerDetailsFragmentDirections.actionPayerInformationFragmentToOpeningCostsFragment(fireStoreDocumentNo)
             Navigation.findNavController(it).navigate(action)
         }
 
         binding.showCalculates.setOnClickListener {
             if (selectedPayer.payerInfo.main_debt != null && selectedPayer.payerInfo.proxy != null) {
-                val action = PayerDetailsFragmentDirections.actionPayerInformationFragmentToCostCalculateFragment(selectedUuid)
+                val action = PayerDetailsFragmentDirections.actionPayerInformationFragmentToCostCalculateFragment(fireStoreDocumentNo)
                 Navigation.findNavController(it).navigate(action)
             }
 

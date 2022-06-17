@@ -4,6 +4,8 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.mesutyukselusta.katlmevimicratakip.db.PayerDatabase
 import com.mesutyukselusta.katlmevimicratakip.model.PayerInfo
 import kotlinx.coroutines.launch
@@ -12,6 +14,9 @@ import kotlin.math.log
 class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(application) {
      val createPayerInputControl = MutableLiveData<Boolean>()
      val createPayerInsertControl = MutableLiveData<Boolean>()
+     val createPayerInsertFirebaseControl = MutableLiveData<Boolean>()
+     val createPayerInsertFirebaseErrorMessage = MutableLiveData<String>()
+
     private  val TAG = "CreatePayerFragmentView"
 
     fun validateControl(name : String,surname : String,documentType : String,documentNo : String,documentYear : String,
@@ -39,16 +44,11 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
                             dateMonth : Int, dateYear : Int,documentTypeIsBill: Boolean,createdMainDebt: Int,trackingAmount : Int){
         Log.d(TAG, "insertPayer: InsertPayerFunc")
         val createDay = "$dateDay/$dateMonth/$dateYear"
-        val payerInfo = PayerInfo(name,surname,documentNo,documentYear,documentType,null,null,null,
-            null,null,createDay,documentTypeIsBill,createdMainDebt,
-            false,trackingAmount,"new_document")
+        val payerInfo = PayerInfo(name,surname,documentNo,documentYear,documentType,0,0,0,
+            0,0,createDay,documentTypeIsBill,createdMainDebt,
+            false,trackingAmount,"new_document","")
         payerInfo.tuition_fee = payerInfo.calculateTuitionFee(trackingAmount,false,0)
-        val dao = PayerDatabase(getApplication()).payerDao()
-        launch {
-            Log.d(TAG, "insertPayerLaunch: ")
-            dao.insertPayerInfo(payerInfo)
-            createPayerInsertControl.value = true
-        }
+        insertFirestore(payerInfo)
     }
 
     private fun cleanCastingAmountText(castingAmount : String) : String{
@@ -58,5 +58,44 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
         return cleanText
     }
 
+    private fun insertFirestore(payerInfo: PayerInfo){
+        val fireStore = Firebase.firestore
 
+        val dataMap = hashMapOf<String,Any>()
+        dataMap["name"] = payerInfo.name
+        dataMap["surname"] = payerInfo.surname!!
+        dataMap["document_no"] = payerInfo.document_no!!
+        dataMap["document_year"] = payerInfo.document_year!!
+        dataMap["document_type"] = payerInfo.document_type!!
+        dataMap["main_debt"] = payerInfo.main_debt!!
+        dataMap["interest"] = payerInfo.interest!!
+        dataMap["proxy_cost"] = payerInfo.proxy!!
+        dataMap["costs"] = payerInfo.costs!!
+        dataMap["tuition_fee"] = payerInfo.tuition_fee!!
+        dataMap["document_creation_date"] = payerInfo.document_creation_date!!
+        dataMap["document_type_is_bill"] = payerInfo.document_type_is_bill!!
+        dataMap["created_main_debt"] = payerInfo.created_main_debt!!
+        dataMap["is_foreclosure"] = payerInfo.is_foreclosure!!
+        dataMap["tracking_amount"] = payerInfo.tracking_amount!!
+        dataMap["document_status"] = payerInfo.document_status!!
+
+        fireStore.collection("PayerInfo").add(dataMap).addOnSuccessListener {
+            createPayerInsertFirebaseControl.value = true
+            // Create firestore_document_no
+            val fireStoreDocumentNo =  it.path.substring(10)
+            payerInfo.firestore_document_no = fireStoreDocumentNo
+            insertPayerToDB(payerInfo)
+        }.addOnFailureListener {
+            createPayerInsertFirebaseErrorMessage.value = it.localizedMessage
+        }
+    }
+
+    private fun insertPayerToDB(payerInfo: PayerInfo){
+        val dao = PayerDatabase(getApplication()).payerDao()
+        launch {
+            Log.d(TAG, "insertPayerLaunch: ")
+            dao.insertPayerInfo(payerInfo)
+            createPayerInsertControl.value = true
+        }
+    }
 }

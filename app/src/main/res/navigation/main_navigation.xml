@@ -28,9 +28,8 @@
             app:destination="@id/addCostFragment"
             app:enterAnim="@anim/from_up" />
         <argument
-            android:name="uuid"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:name="fireStoreDocumentNo"
+            app:argType="string" />
         <action
             android:id="@+id/action_openingCostsFragment_to_costsDetailFragment"
             app:destination="@id/costsDetailFragment"
@@ -46,9 +45,8 @@
             app:destination="@id/openingCostsFragment"
             app:enterAnim="@anim/from_right" />
         <argument
-            android:name="uuid"
-            app:argType="integer"
-            android:defaultValue="0" />
+            android:name="fireStoreDocumentNo"
+            app:argType="string" />
         <action
             android:id="@+id/action_payerInformationFragment_to_costCalculateFragment"
             app:destination="@id/costCalculateFragment"
@@ -60,9 +58,8 @@
         android:label="Ek Masraf Ekle"
         tools:layout="@layout/fragment_add_cost" >
         <argument
-            android:name="uuid"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:name="fireStoreDocumentNo"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/createPayerFragment"
@@ -92,8 +89,7 @@
         android:label="Dosya Kapama Hesaplamalar"
         tools:layout="@layout/fragment_cost_calculate">
         <argument
-            android:name="uuid"
-            android:defaultValue="-1"
-            app:argType="integer" />
+            android:name="fireStoreDocumentNo"
+            app:argType="string" />
     </fragment>
 </navigation>

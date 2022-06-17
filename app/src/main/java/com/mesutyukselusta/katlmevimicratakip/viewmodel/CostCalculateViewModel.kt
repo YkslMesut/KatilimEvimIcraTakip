@@ -18,9 +18,9 @@ class CostCalculateViewModel(application: Application) : BaseViewModel(applicati
     lateinit var selectedPayer : PayerInfoWithCosts
 
 
-    fun getPayerInfo(uuid : Int) {
+    fun getPayerInfo(fireStoreDocumentNo : String) {
         launch {
-            val payer = PayerDatabase(getApplication()).payerDao().getPayerInfoWithCosts(uuid)
+            val payer = PayerDatabase(getApplication()).payerDao().getPayerInfoWithCosts(fireStoreDocumentNo)
             selectedPayer = payer
         }
     }

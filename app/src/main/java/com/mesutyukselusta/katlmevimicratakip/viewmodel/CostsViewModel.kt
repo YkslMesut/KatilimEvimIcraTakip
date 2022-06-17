@@ -10,9 +10,9 @@ class CostsViewModel(application: Application) : BaseViewModel(application) {
     private  val TAG = "CostViewModel"
     val costLiveData = MutableLiveData<List<Costs>>()
 
-    fun getCosts(uuid : Int) {
+    fun getCosts(fireStoreDocumentNo : String) {
         launch {
-            val costs = PayerDatabase(getApplication()).payerDao().getCostListInfo(uuid)
+            val costs = PayerDatabase(getApplication()).payerDao().getCostListInfo(fireStoreDocumentNo)
             showCosts(costs)
         }
     }

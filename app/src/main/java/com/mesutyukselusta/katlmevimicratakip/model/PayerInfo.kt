@@ -71,11 +71,12 @@ data class PayerInfo(
     @ColumnInfo(name = "document_status")
     @SerializedName("document_status")
     var document_status : String?,
+
+    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "firestore_document_no")
+    @SerializedName("firestore_document_no")
+    var firestore_document_no : String,
 ){
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "uuid")
-    @SerializedName("uuid")
-    var uuid: Int = 0
 
      fun calculateTuitionFee(tracking_amount: Int?,isForeclosure: Boolean?,advanceFee : Int) : Int{
          val trackingAmount : Int = tracking_amount!!

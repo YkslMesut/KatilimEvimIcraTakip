@@ -28,7 +28,7 @@ class PayerAdapter(private val payerList : ArrayList<PayerInfo>): RecyclerView.A
     }
 
     interface onItemClickListener {
-        fun onItemClick(uuid : Int)
+        fun onItemClick(fireStoreDocumentNo : String)
     }
 
     fun setOnItemClickListener(listener : onItemClickListener){
@@ -42,7 +42,7 @@ class PayerAdapter(private val payerList : ArrayList<PayerInfo>): RecyclerView.A
             itemBinding.txtSurname.text = payerInfo.surname
             itemBinding.txtDocumentId.text = payerInfo.document_year.toString()+"-"+payerInfo.document_no.toString()
             itemBinding.txtDocumentType.text = payerInfo.document_type
-            itemBinding.containerUuid.text = payerInfo.uuid.toString()
+            itemBinding.containerUuid.text = payerInfo.firestore_document_no
 
             if (payerInfo.document_status.equals("avans_iade")){
                 itemBinding.container.setBackgroundColor(Color.YELLOW)
@@ -53,7 +53,7 @@ class PayerAdapter(private val payerList : ArrayList<PayerInfo>): RecyclerView.A
         }
         init{
             itemView.setOnClickListener {
-                listener.onItemClick(Integer.parseInt(itemBinding.containerUuid.text.toString()))
+                listener.onItemClick(itemBinding.containerUuid.text.toString())
             }
         }
     }

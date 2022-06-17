@@ -46,8 +46,8 @@ class CostCalculateFragment : Fragment(),DatePickerDialog.OnDateSetListener {
         viewModel = ViewModelProvider(this).get(CostCalculateViewModel::class.java)
 
         arguments?.let {
-            val selectedUuid = CostCalculateFragmentArgs.fromBundle(it).uuid
-            viewModel.getPayerInfo(selectedUuid)
+            val fireStoreDocumentNo = CostCalculateFragmentArgs.fromBundle(it).fireStoreDocumentNo
+            viewModel.getPayerInfo(fireStoreDocumentNo)
         }
         val interest = 0.57
         if (interest < 1) {

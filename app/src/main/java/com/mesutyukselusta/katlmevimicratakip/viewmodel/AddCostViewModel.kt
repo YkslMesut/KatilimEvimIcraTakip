@@ -12,10 +12,9 @@ class AddCostViewModel(application: Application) : BaseViewModel(application) {
     val addCostInputControl = MutableLiveData<Boolean>()
     val addCostInsertControl = MutableLiveData<Boolean>()
 
-    fun validateControl(costName : String,costAmount : String,uuid: Int,
+    fun validateControl(costName : String,costAmount : String,fireStoreDocumentNo: String,
                         dateDay : Int,dateMonth : Int,dateYear : Int,isAdvanceFee : Boolean,isProtestCost : Boolean)  {
-        addCostInputControl.value = costName.isNotEmpty() && costAmount.isNotEmpty() &&
-                uuid != -1 &&
+        addCostInputControl.value = costName.isNotEmpty() && costAmount.isNotEmpty() && fireStoreDocumentNo.isNotEmpty() &&
                 dateDay != -1 &&
                 dateMonth != -1 &&
                 dateYear != -1
@@ -24,14 +23,14 @@ class AddCostViewModel(application: Application) : BaseViewModel(application) {
             cleanCost = cleanCost.substring(1)
             cleanCost = cleanCost.replace(",","")
             cleanCost = cleanCost.replace(".","")
-            insertCost(costName,cleanCost,uuid,dateDay,dateMonth,dateYear,isAdvanceFee,isProtestCost)
+            insertCost(costName,cleanCost,fireStoreDocumentNo,dateDay,dateMonth,dateYear,isAdvanceFee,isProtestCost)
         }
 
     }
 
-    private fun insertCost(costName : String, costAmount: String, uuid : Int, dateDay : Int, dateMonth : Int, dateYear : Int,isAdvanceFee : Boolean,isProtestCost: Boolean){
+    private fun insertCost(costName : String, costAmount: String, fireStoreDocumentNo : String, dateDay : Int, dateMonth : Int, dateYear : Int,isAdvanceFee : Boolean,isProtestCost: Boolean){
         val mCostAmount = Integer.parseInt(costAmount)
-        val costs = Costs(mCostAmount,costName,dateDay,dateMonth,dateYear,uuid,isAdvanceFee,isProtestCost)
+        val costs = Costs(mCostAmount,costName,dateDay,dateMonth,dateYear,fireStoreDocumentNo,isAdvanceFee,isProtestCost)
         val dao = PayerDatabase(getApplication()).payerDao()
         launch {
             dao.insertCosts(costs)

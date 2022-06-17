@@ -17,9 +17,9 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
     val payerLiveData = MutableLiveData<PayerInfoWithCosts>()
     val updateControl = MutableLiveData<Boolean>()
 
-    fun getPayer(uuid : Int) {
+    fun getPayer(fireStoreDocumentNo : String) {
         launch {
-            val payer = PayerDatabase(getApplication()).payerDao().getPayerInfoWithCosts(uuid)
+            val payer = PayerDatabase(getApplication()).payerDao().getPayerInfoWithCosts(fireStoreDocumentNo)
             // Control Interest
             val calculatedInterest = calculateInterest(payer.payerInfo.created_main_debt!!,
                 payer.payerInfo.document_type_is_bill!!,payer.payerInfo.document_creation_date!!)
@@ -65,8 +65,8 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
                     Integer.parseInt(proxyClean),
                     Integer.parseInt(mCost),
                     tuitionFeeClean,selectedPayerInfo.document_creation_date,selectedPayerInfo.document_type_is_bill,
-                    selectedPayerInfo.created_main_debt,isForeClosure,selectedPayerInfo.tracking_amount,selectedPayerInfo.document_status)
-                newPayer.uuid = selectedPayerInfo.uuid
+                    selectedPayerInfo.created_main_debt,isForeClosure,selectedPayerInfo.tracking_amount,selectedPayerInfo.document_status,selectedPayerInfo.firestore_document_no)
+                newPayer.firestore_document_no = selectedPayerInfo.firestore_document_no
                 launch {
                     PayerDatabase(getApplication()).payerDao().updatePayer(newPayer)
                     updateControl.value = true

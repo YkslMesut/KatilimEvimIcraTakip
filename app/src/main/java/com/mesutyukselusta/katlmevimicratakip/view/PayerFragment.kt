@@ -92,7 +92,7 @@ class PayerFragment : Fragment() {
                     }
                     ItemTouchHelper.RIGHT ->{
                         val item = payerAdapter.getPayerFromPosition(viewHolder.adapterPosition)
-                        viewModel.deletePayerFromRoom(item.uuid)
+                        viewModel.deletePayerFromRoom(item.firestore_document_no)
                     }
                 }
             }
@@ -102,8 +102,8 @@ class PayerFragment : Fragment() {
         touchHelper.attachToRecyclerView(binding.recyclerView)
 
         payerAdapter.setOnItemClickListener(object : PayerAdapter.onItemClickListener{
-            override fun onItemClick(uuid: Int) {
-                val action = PayerFragmentDirections.actionPayerFragmentToPayerInformationFragment(uuid)
+            override fun onItemClick(fireStoreDocumentNo: String) {
+                val action = PayerFragmentDirections.actionPayerFragmentToPayerInformationFragment(fireStoreDocumentNo)
                 Navigation.findNavController(requireView()).navigate(action)
             }
         })

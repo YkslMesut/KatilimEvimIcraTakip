@@ -28,9 +28,9 @@ data class Costs(
     @SerializedName("date_year")
     var date_year : Int?,
 
-    @ColumnInfo(name = "uuid")
-    @SerializedName("uuid")
-    val uuid: Int?,
+    @ColumnInfo(name = "firestore_document_no")
+    @SerializedName("firestore_document_no")
+    val uuid: String,
     @ColumnInfo(name = "advance_fee")
     @SerializedName("advance_fee")
     val advance_fee: Boolean?,

@@ -36,7 +36,7 @@ class AddCostFragment : Fragment(),DatePickerDialog.OnDateSetListener {
     private var isAdvanceFee : Boolean = false
     private var isProtestCost : Boolean = false
 
-    var selectedUuid = -1
+    private lateinit var fireStoreDocumentNo : String
     var dateDay = -1
     var dateMonth = -1
     var dateYear = -1
@@ -51,7 +51,7 @@ class AddCostFragment : Fragment(),DatePickerDialog.OnDateSetListener {
         viewModel = ViewModelProvider(this).get(AddCostViewModel::class.java)
 
         arguments?.let {
-            selectedUuid = AddCostFragmentArgs.fromBundle(it).uuid
+            fireStoreDocumentNo = AddCostFragmentArgs.fromBundle(it).fireStoreDocumentNo
         }
 
         spinnerView()
@@ -60,7 +60,7 @@ class AddCostFragment : Fragment(),DatePickerDialog.OnDateSetListener {
 
             takeInfoFromEditTexts()
 
-            viewModel.validateControl(costName,costAmount,selectedUuid,dateDay,dateMonth,dateYear,isAdvanceFee,isProtestCost)
+            viewModel.validateControl(costName,costAmount,fireStoreDocumentNo,dateDay,dateMonth,dateYear,isAdvanceFee,isProtestCost)
             observeLiveData()
         }
         binding.btnPickDate.setOnClickListener {

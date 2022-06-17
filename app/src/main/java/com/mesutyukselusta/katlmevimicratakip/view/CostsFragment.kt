@@ -25,7 +25,7 @@ class CostsFragment : Fragment() {
     private  val TAG = "CostsFragment"
     private var _binding: FragmentOpeningCostsBinding? = null
     private val binding get() = _binding!!
-    private var selectedUuid = 0
+    private lateinit var fireStoreDocumentNo : String
     private val costAdapter = CostAdapter(arrayListOf())
     private lateinit var viewModel : CostsViewModel
 
@@ -47,12 +47,11 @@ class CostsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: ")
         arguments?.let {
-            selectedUuid = CostsFragmentArgs.fromBundle(it).uuid
-            Log.d(TAG, "arguments: "+selectedUuid)
+            fireStoreDocumentNo = CostsFragmentArgs.fromBundle(it).fireStoreDocumentNo
 
         }
         viewModel = ViewModelProvider(this).get(CostsViewModel::class.java)
-        viewModel.getCosts(selectedUuid)
+        viewModel.getCosts(fireStoreDocumentNo)
 
         adapterView()
 
@@ -88,7 +87,7 @@ class CostsFragment : Fragment() {
         val id = item.itemId
 
         if (id == R.id.add_costs){
-            val action = CostsFragmentDirections.actionOpeningCostsFragmentToAddCostFragment(selectedUuid)
+            val action = CostsFragmentDirections.actionOpeningCostsFragmentToAddCostFragment(fireStoreDocumentNo)
             Navigation.findNavController(requireView()).navigate(action)
         }
 
