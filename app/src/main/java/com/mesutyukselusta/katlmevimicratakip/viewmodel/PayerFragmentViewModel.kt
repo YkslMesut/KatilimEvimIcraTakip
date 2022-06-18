@@ -27,7 +27,7 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
 
 
     // Get Data Fun
-    fun getAllPayersFromRoom() {
+    fun getAllPayersFromLocalDb() {
         launch {
             val payers = PayerDatabase(getApplication()).payerDao().getAllPayers()
             showPayers(payers)
@@ -58,10 +58,10 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
 
     // Delete Data Fun
 
-    fun deletePayerFromRoom(fireStoreDocumentNo : String){
+    fun deletePayerFromLocalDB(fireStoreDocumentNo : String){
         launch {
             PayerDatabase(getApplication()).payerDao().deletePayer(fireStoreDocumentNo)
-            getAllPayersFromRoom()
+            getAllPayersFromLocalDb()
         }
     }
 
@@ -78,11 +78,11 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
 
     // Update Data Fun
 
-    fun updateDocumentStatus(payerInfo : PayerInfo,documentStatus : String) {
+    fun updateDocumentStatusFromLocalDB(payerInfo : PayerInfo,documentStatus : String) {
         launch {
             payerInfo.document_status = documentStatus
             PayerDatabase(getApplication()).payerDao().updatePayer(payerInfo)
-            getAllPayersFromRoom()
+            getAllPayersFromLocalDb()
         }
     }
 
