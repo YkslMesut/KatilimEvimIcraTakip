@@ -47,7 +47,7 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
             0,0,createDay,documentTypeIsBill,createdMainDebt,
             false,trackingAmount,"new_document","")
         payerInfo.tuition_fee = payerInfo.calculateTuitionFee(trackingAmount,false,0)
-        insertPayerToDB(payerInfo)
+        insertPayerToFirestore(payerInfo)
     }
 
     private fun cleanCastingAmountText(castingAmount : String) : String{
