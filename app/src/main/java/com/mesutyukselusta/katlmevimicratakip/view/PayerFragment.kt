@@ -30,13 +30,11 @@ class PayerFragment : Fragment() {
     private var _binding: FragmentPayerBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var auth : FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
             super.onCreate(savedInstanceState)
 
-        auth = Firebase.auth
     }
 
     override fun onCreateView(
@@ -56,7 +54,7 @@ class PayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(PayerFragmentViewModel::class.java)
-        viewModel.getAllPayersFromRoom()
+        viewModel.getAllPayersFromFireStore(requireContext())
 
         adapterView()
 
@@ -92,7 +90,7 @@ class PayerFragment : Fragment() {
                     }
                     ItemTouchHelper.RIGHT ->{
                         val item = payerAdapter.getPayerFromPosition(viewHolder.adapterPosition)
-                        viewModel.deletePayerFromRoom(item.firestore_document_no)
+                        viewModel.deletePayerFromFireStore(requireContext(),item.firestore_document_no)
                     }
                 }
             }
@@ -112,23 +110,38 @@ class PayerFragment : Fragment() {
 
     private fun observeLiveData() {
 
-        viewModel.payerListLiveData.observe(viewLifecycleOwner) { payers ->
-
-            payers?.let {
-                binding.recyclerView.visibility = View.VISIBLE
-                payerAdapter.updatePayerAdapter(it)
+        viewModel.signOutLiveData.observe(viewLifecycleOwner){ signOut->
+            signOut?.let {
+                if (signOut){
+                    val intent = Intent(requireContext(),LoginActivity::class.java)
+                    startActivity(intent)
+                    requireActivity().finish()
+                }
             }
         }
 
-        viewModel.payersError.observe(viewLifecycleOwner, Observer { error->
+        viewModel.payerListLiveData.observe(viewLifecycleOwner) { payers ->
+
+            payers?.let {
+                if (payers.size < 0){
+                    binding.recyclerView.visibility = View. INVISIBLE
+                } else {
+                    binding.recyclerView.visibility = View.VISIBLE
+                    payerAdapter.updatePayerAdapter(it)
+                }
+
+            }
+        }
+
+        viewModel.payersError.observe(viewLifecycleOwner) { error ->
             error?.let {
-                if(it) {
+                if (it) {
                     binding.payersError.visibility = View.VISIBLE
                 } else {
                     binding.payersError.visibility = View.GONE
                 }
             }
-        })
+        }
 
         viewModel.payersLoading.observe(viewLifecycleOwner) { loading ->
             loading?.let {
@@ -155,10 +168,8 @@ class PayerFragment : Fragment() {
             val action = PayerFragmentDirections.actionPayerFragmentToCreatePayerFragment()
             Navigation.findNavController(requireView()).navigate(action)
         } else if (id == R.id.logout){
-            auth.signOut()
-            val intent = Intent(requireContext(),LoginActivity::class.java)
-            startActivity(intent)
-            requireActivity().finish()
+            viewModel.signOut()
+            observeLiveData()
         }
 
         return super.onOptionsItemSelected(item)
@@ -168,16 +179,16 @@ class PayerFragment : Fragment() {
         val alert = AlertDialog.Builder(requireContext())
             .setMessage("Dosya Durumunu Seçiniz")
             .setPositiveButton("Avans İadesi Bekleniyor") { dialog, which ->
-                viewModel.updateDocumentStatus(selectedPayer, "avans_iade")
+                viewModel.updateDocumentStatusFromFireStore(requireContext(),selectedPayer.firestore_document_no, "avans_iade")
                 dialog.dismiss()
             }
             .setNegativeButton("Dosya Kapandı") { dialog, which ->
-                viewModel.updateDocumentStatus(selectedPayer, "dosya_kapandı")
+                viewModel.updateDocumentStatusFromFireStore(requireContext(),selectedPayer.firestore_document_no, "dosya_kapandı")
 
                 dialog.dismiss()
             }
             .setOnCancelListener {
-                viewModel.getAllPayersFromRoom()
+                viewModel.getAllPayersFromFireStore(requireContext())
             }
             .create()
 
