@@ -42,13 +42,12 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
 
     private fun insertPayer(name : String, surname : String, documentType : String, documentNo : Int, documentYear: Int, dateDay : Int,
                             dateMonth : Int, dateYear : Int,documentTypeIsBill: Boolean,createdMainDebt: Int,trackingAmount : Int){
-        Log.d(TAG, "insertPayer: InsertPayerFunc")
         val createDay = "$dateDay/$dateMonth/$dateYear"
         val payerInfo = PayerInfo(name,surname,documentNo,documentYear,documentType,0,0,0,
             0,0,createDay,documentTypeIsBill,createdMainDebt,
             false,trackingAmount,"new_document","")
         payerInfo.tuition_fee = payerInfo.calculateTuitionFee(trackingAmount,false,0)
-        insertFirestore(payerInfo)
+        insertPayerToDB(payerInfo)
     }
 
     private fun cleanCastingAmountText(castingAmount : String) : String{
@@ -58,9 +57,10 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
         return cleanText
     }
 
-    private fun insertFirestore(payerInfo: PayerInfo){
+    private fun insertPayerToFirestore(payerInfo: PayerInfo){
         val fireStore = Firebase.firestore
 
+        //Create DataMap
         val dataMap = hashMapOf<String,Any>()
         dataMap["name"] = payerInfo.name
         dataMap["surname"] = payerInfo.surname!!
@@ -81,10 +81,13 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
 
         fireStore.collection("PayerInfo").add(dataMap).addOnSuccessListener {
             createPayerInsertFirebaseControl.value = true
-            // Create firestore_document_no
+            // Set fireStoreDocumentNo
+
             val fireStoreDocumentNo =  it.path.substring(10)
             payerInfo.firestore_document_no = fireStoreDocumentNo
+
             insertPayerToDB(payerInfo)
+
         }.addOnFailureListener {
             createPayerInsertFirebaseErrorMessage.value = it.localizedMessage
         }
@@ -92,8 +95,8 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
 
     private fun insertPayerToDB(payerInfo: PayerInfo){
         val dao = PayerDatabase(getApplication()).payerDao()
+
         launch {
-            Log.d(TAG, "insertPayerLaunch: ")
             dao.insertPayerInfo(payerInfo)
             createPayerInsertControl.value = true
         }
