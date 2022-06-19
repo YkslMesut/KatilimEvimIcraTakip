@@ -103,7 +103,7 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
     }
 
     private fun castData(documents : List<DocumentSnapshot>) : ArrayList<PayerInfo>{
-         val payerList = ArrayList<PayerInfo>()
+        val payerList = ArrayList<PayerInfo>()
 
         for (document in documents){
 
@@ -126,7 +126,7 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
             val tuitionFee = (document.get("tuition_fee") as Number).toInt()
 
             val payer = PayerInfo(name,surname,documentNo,documentYear,documentType,mainDebt,interest,proxyCost,
-            costs,tuitionFee,documentCreationDate,documentTypeIsBill,createdMainDebt,isForeclosure,trackingAmount,documentStatus,fireStoreDocumentNo)
+                costs,tuitionFee,documentCreationDate,documentTypeIsBill,createdMainDebt,isForeclosure,trackingAmount,documentStatus,fireStoreDocumentNo)
 
             payerList.add(payer)
         }

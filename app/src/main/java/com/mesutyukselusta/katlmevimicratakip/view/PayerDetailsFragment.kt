@@ -25,7 +25,7 @@ class PayerDetailsFragment : Fragment() {
 
     private lateinit var viewModel : PayerDetailsViewModel
 
-    private lateinit var selectedPayer : PayerInfoWithCosts
+    private lateinit var selectedPayer : PayerInfo
 
     private lateinit var mainDebtTextWatcher: MoneyTextWatcher
     private lateinit var proxyTextWatcher: MoneyTextWatcher
@@ -48,7 +48,7 @@ class PayerDetailsFragment : Fragment() {
 
         arguments?.let {
             fireStoreDocumentNo = PayerDetailsFragmentArgs.fromBundle(it).fireStoreDocumentNo
-            viewModel.getPayer(fireStoreDocumentNo)
+            viewModel.getPayerFromFireStore(requireContext(),fireStoreDocumentNo)
 
         }
 
@@ -69,7 +69,7 @@ class PayerDetailsFragment : Fragment() {
                 val proxy = (binding.etProxy.text.toString())
                 val costs = (binding.txtCosts.text.toString())
                 val isForeClosure = (binding.checkBoxIsForeclosure.isChecked)
-                viewModel.updatePayer(selectedPayer,mainDebt,proxy,isForeClosure,costs)
+                viewModel.updatePayer(requireContext(),selectedPayer,mainDebt,proxy,isForeClosure,costs)
                 observeLiveData()
             }
         }
@@ -81,7 +81,7 @@ class PayerDetailsFragment : Fragment() {
         }
 
         binding.showCalculates.setOnClickListener {
-            if (selectedPayer.payerInfo.main_debt != null && selectedPayer.payerInfo.proxy != null) {
+            if (selectedPayer.main_debt != null && selectedPayer.proxy != null) {
                 val action = PayerDetailsFragmentDirections.actionPayerInformationFragmentToCostCalculateFragment(fireStoreDocumentNo)
                 Navigation.findNavController(it).navigate(action)
             }
@@ -106,42 +106,38 @@ class PayerDetailsFragment : Fragment() {
         _binding = null
     }
 
-    private fun updateView(payer : PayerInfoWithCosts){
+    private fun updateView(payer : PayerInfo){
 
-        val name = payer.payerInfo.name
-        val surName = payer.payerInfo.surname
-        val  mainDebt = payer.payerInfo.main_debt.toString()
-        val interest = payer.payerInfo.interest.toString()
-        val proxy = payer.payerInfo.proxy.toString()
-        val tuitionFee = payer.payerInfo.tuition_fee.toString()
-        val documentNo = payer.payerInfo.document_year.toString() + "/" +
-                payer.payerInfo.document_no.toString()
-        val documentCreatedDate = payer.payerInfo.document_creation_date
+        val name = payer.name
+        val surName = payer.surname
+        val  mainDebt = payer.main_debt.toString()
+        val interest = payer.interest.toString()
+        val proxy = payer.proxy.toString()
+        val tuitionFee = payer.tuition_fee.toString()
+        val documentNo = payer.document_year.toString() + "/" +
+                payer.document_no.toString()
+        val documentCreatedDate = payer.document_creation_date
 
-        var costs = 0
-
-        for (cost in payer.costs){
-            costs += cost.amount_of_expense!!
-        }
+        var costs =payer.costs
 
         binding.payerNameSurname.text = "$name/$surName"
         binding.txtDocumentCreatedDay.text = documentCreatedDate
         binding.txtDocumentNo.text = "$documentNo"
-        binding.checkBoxIsForeclosure.isChecked = payer.payerInfo.is_foreclosure!!
+        binding.checkBoxIsForeclosure.isChecked = payer.is_foreclosure!!
 
-        if (mainDebt != "null"){
+        if (mainDebt.isNotEmpty()){
             with(binding) { etMainDebt.setText(costAmountCastingFor(mainDebt)) }
         }
-        if (interest != "null"){
+        if (interest.isNotEmpty()){
             binding.txtInterest.text = costAmountCastingFor(interest)
         }
-        if (proxy != "null"){
+        if (proxy.isNotEmpty()){
             binding.etProxy.setText(costAmountCastingFor(proxy))
         }
-        if (!costs.equals("null")){
+        if (costs.toString().isNotEmpty()){
             binding.txtCosts.text = costAmountCastingFor(costs.toString())
         }
-        if (tuitionFee != "null"){
+        if (tuitionFee.isNotEmpty()){
             binding.txtTuitionFee.text = costAmountCastingFor(tuitionFee)
         }
     }
