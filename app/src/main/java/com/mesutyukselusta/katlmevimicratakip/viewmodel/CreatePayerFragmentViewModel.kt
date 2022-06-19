@@ -17,6 +17,9 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
      val createPayerInsertFirebaseControl = MutableLiveData<Boolean>()
      val createPayerInsertFirebaseErrorMessage = MutableLiveData<String>()
 
+    val db = Firebase.firestore
+
+
     private  val TAG = "CreatePayerFragmentView"
 
     fun validateControl(name : String,surname : String,documentType : String,documentNo : String,documentYear : String,
@@ -58,7 +61,6 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
     }
 
     private fun insertPayerToFirestore(payerInfo: PayerInfo){
-        val fireStore = Firebase.firestore
 
         //Create DataMap
         val dataMap = hashMapOf<String,Any>()
@@ -79,7 +81,7 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
         dataMap["tracking_amount"] = payerInfo.tracking_amount!!
         dataMap["document_status"] = payerInfo.document_status!!
 
-        fireStore.collection("PayerInfo").add(dataMap).addOnSuccessListener {
+        db.collection("PayerInfo").add(dataMap).addOnSuccessListener {
             createPayerInsertFirebaseControl.value = true
             // Set fireStoreDocumentNo
 
