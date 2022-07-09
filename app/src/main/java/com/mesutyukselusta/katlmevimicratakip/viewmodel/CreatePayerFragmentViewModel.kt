@@ -14,7 +14,6 @@ import kotlin.math.log
 class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(application) {
      val createPayerInputControl = MutableLiveData<Boolean>()
      val createPayerInsertControl = MutableLiveData<Boolean>()
-     val createPayerInsertFirebaseControl = MutableLiveData<Boolean>()
      val createPayerInsertFirebaseErrorMessage = MutableLiveData<String>()
 
     val db = Firebase.firestore
@@ -82,12 +81,10 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
         dataMap["document_status"] = payerInfo.document_status!!
 
         db.collection("PayerInfo").add(dataMap).addOnSuccessListener {
-            createPayerInsertFirebaseControl.value = true
+            createPayerInsertControl.value = true
             // Set fireStoreDocumentNo
-
             val fireStoreDocumentNo =  it.path.substring(10)
             payerInfo.firestore_document_no = fireStoreDocumentNo
-
             insertPayerToDB(payerInfo)
 
         }.addOnFailureListener {
@@ -100,7 +97,6 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
 
         launch {
             dao.insertPayerInfo(payerInfo)
-            createPayerInsertControl.value = true
         }
     }
 }

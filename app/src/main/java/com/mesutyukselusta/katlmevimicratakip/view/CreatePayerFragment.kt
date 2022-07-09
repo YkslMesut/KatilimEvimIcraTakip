@@ -84,11 +84,22 @@ class CreatePayerFragment : Fragment(), DatePickerDialog.OnDateSetListener{
     }
 
     private fun observeLiveData(){
-        viewModel.createPayerInsertControl.observe(viewLifecycleOwner, Observer {isInsertDatabase->
-            if (isInsertDatabase){
+        viewModel.createPayerInsertControl.observe(viewLifecycleOwner) { isInsertDatabase ->
+            if (isInsertDatabase) {
                 NavHostFragment.findNavController(this@CreatePayerFragment).navigateUp()
             }
-        })
+        }
+        viewModel.createPayerInputControl.observe(viewLifecycleOwner) {
+            if (!it) {
+                Toast.makeText(context, "Lütfen Gerekli Alanları Doldurunuz", Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+        viewModel.createPayerInsertFirebaseErrorMessage.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+            }
+            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun takeInfoFromView() {

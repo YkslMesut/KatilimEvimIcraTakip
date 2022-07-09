@@ -76,9 +76,8 @@
         android:label="Ek Masrafı Güncelle"
         tools:layout="@layout/fragment_costs_detail" >
         <argument
-            android:name="cost_uuid"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:name="firestore_cost_document_no"
+            app:argType="string" />
         <action
             android:id="@+id/action_costsDetailFragment_to_openingCostsFragment"
             app:destination="@id/openingCostsFragment" />

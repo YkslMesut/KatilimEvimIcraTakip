@@ -25,7 +25,7 @@ class CostAdapter(private val costsList : ArrayList<Costs>) : RecyclerView.Adapt
         costFilterList = costsList
     }
     interface onItemClickListener {
-        fun onItemClick(costUuid : Int)
+        fun onItemClick(costUuid : String)
     }
 
     fun setOnItemClickListener(listener : CostAdapter.onItemClickListener){
@@ -45,11 +45,11 @@ class CostAdapter(private val costsList : ArrayList<Costs>) : RecyclerView.Adapt
             itemBinding.txtCostName.text = costs.cost_name
             itemBinding.txtDate.text = costs.date_day.toString()+"/"+costs.date_month.toString()+"/"+
                     costs.date_year.toString()
-            itemBinding.containerCostUuid.text = costs.cost_uuid.toString()
+            itemBinding.containerCostUuid.text = costs.firestore_cost_document_no
         }
         init{
             itemView.setOnClickListener {
-                listener.onItemClick(Integer.parseInt(itemBinding.containerCostUuid.text.toString()))
+                listener.onItemClick(itemBinding.containerCostUuid.text.toString())
             }
         }
     }

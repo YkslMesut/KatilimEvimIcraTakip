@@ -23,9 +23,12 @@ class CostsDetailsFragment : Fragment(), DatePickerDialog.OnDateSetListener{
     private val TAG = "CostsDetailFragment"
     private var _binding : FragmentCostsDetailBinding? = null
     private val binding get() = _binding!!
-    private var selectedCostUuid = 0
+
+    private lateinit var selectedCostUuid : String
+
     private lateinit var selectedCost : Costs
     private lateinit var viewModel : CostDetailsViewModel
+
     var dateDay = -1
     var dateMonth = -1
     var dateYear = -1
@@ -46,8 +49,8 @@ class CostsDetailsFragment : Fragment(), DatePickerDialog.OnDateSetListener{
         viewModel = ViewModelProvider(this).get(CostDetailsViewModel::class.java)
 
         arguments?.let {
-            selectedCostUuid = CostsDetailsFragmentArgs.fromBundle(it).costUuid
-            viewModel.getCosts(selectedCostUuid)
+            selectedCostUuid = CostsDetailsFragmentArgs.fromBundle(it).firestoreCostDocumentNo
+            viewModel.getCost(selectedCostUuid)
 
         }
 

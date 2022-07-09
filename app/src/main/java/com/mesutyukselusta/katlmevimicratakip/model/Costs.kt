@@ -30,18 +30,15 @@ data class Costs(
 
     @ColumnInfo(name = "firestore_document_no")
     @SerializedName("firestore_document_no")
-    val uuid: String,
+    val firestore_document_no: String,
     @ColumnInfo(name = "advance_fee")
     @SerializedName("advance_fee")
     val advance_fee: Boolean?,
     @ColumnInfo(name = "protest_cost")
     @SerializedName("protest_cost")
-    val protest_cost: Boolean?
-    ){
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "cost_uuid")
-    @SerializedName("cost_uuid")
-    var cost_uuid: Int = 0
-
-
-}
+    val protest_cost: Boolean?,
+    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "firestore_cost_document_no")
+    @SerializedName("firestore_cost_document_no")
+    var firestore_cost_document_no : String,
+    )

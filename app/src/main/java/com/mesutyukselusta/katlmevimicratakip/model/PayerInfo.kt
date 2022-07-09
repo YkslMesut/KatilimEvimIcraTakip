@@ -42,7 +42,7 @@ data class PayerInfo(
 
     @ColumnInfo(name = "costs")
     @SerializedName("costs")
-    val costs : Int?,
+    var costs : Int?,
 
     @ColumnInfo(name = "tuition_fee")
     @SerializedName("tuition_fee")

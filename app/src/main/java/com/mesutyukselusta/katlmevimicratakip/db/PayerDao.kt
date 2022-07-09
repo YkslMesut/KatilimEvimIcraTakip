@@ -22,8 +22,8 @@ interface PayerDao {
     suspend fun getCostListInfo(firestore_document_no : String) : List<Costs>
 
 
-    @Query("SELECT * FROM costs WHERE cost_uuid = :cost_uuid")
-    suspend fun getCostInfo(cost_uuid : Int) : Costs
+    @Query("SELECT * FROM costs WHERE firestore_cost_document_no = :cost_uuid")
+    suspend fun getCostInfo(cost_uuid : String) : Costs
 
 
     @Query("SELECT * FROM payerinfo")
@@ -32,8 +32,8 @@ interface PayerDao {
     @Query("DELETE FROM payerinfo WHERE firestore_document_no = :firestore_document_no")
     suspend fun deletePayer(firestore_document_no : String)
 
-    @Query("DELETE FROM costs WHERE cost_uuid = :cost_uuid")
-    suspend fun deleteCost(cost_uuid : Int)
+    @Query("DELETE FROM costs WHERE firestore_cost_document_no = :cost_uuid")
+    suspend fun deleteCost(cost_uuid : String)
 
     @Update(entity = PayerInfo::class)
     suspend fun updatePayer(payerInfo: PayerInfo)

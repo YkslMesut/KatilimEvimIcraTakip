@@ -60,7 +60,7 @@ class AddCostFragment : Fragment(),DatePickerDialog.OnDateSetListener {
 
             takeInfoFromEditTexts()
 
-            viewModel.validateControl(costName,costAmount,fireStoreDocumentNo,dateDay,dateMonth,dateYear,isAdvanceFee,isProtestCost)
+            viewModel.validateControl(requireContext(),costName,costAmount,fireStoreDocumentNo,dateDay,dateMonth,dateYear,isAdvanceFee,isProtestCost)
             observeLiveData()
         }
         binding.btnPickDate.setOnClickListener {
@@ -90,8 +90,17 @@ class AddCostFragment : Fragment(),DatePickerDialog.OnDateSetListener {
 
         viewModel.addCostInsertControl.observe(viewLifecycleOwner, Observer {isInsertDatabase->
             if (isInsertDatabase){
+                Toast.makeText(context,"Başarıyla Masraf Eklendi",Toast.LENGTH_LONG).show()
                 NavHostFragment.findNavController(this@AddCostFragment).navigateUp()
             }
+        })
+        viewModel.addCostInputControl.observe(viewLifecycleOwner, Observer {
+            if (!it){
+                Toast.makeText(requireContext(),"Lütfen Boş Alanları Doldurunuz",Toast.LENGTH_LONG).show()
+            }
+        })
+        viewModel.addCostStatusMessage.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(requireContext(),it,Toast.LENGTH_LONG).show()
         })
     }
 

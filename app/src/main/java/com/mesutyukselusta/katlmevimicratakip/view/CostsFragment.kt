@@ -51,7 +51,7 @@ class CostsFragment : Fragment() {
 
         }
         viewModel = ViewModelProvider(this).get(CostsViewModel::class.java)
-        viewModel.getCosts(fireStoreDocumentNo)
+        viewModel.getCostsFromFireStore(requireContext(),fireStoreDocumentNo)
 
         adapterView()
 
@@ -112,11 +112,11 @@ class CostsFragment : Fragment() {
                 when(direction){
                     ItemTouchHelper.LEFT ->{
                         val cost = costAdapter.getCostFromPosition(viewHolder.adapterPosition)
-                        viewModel.deleteCostFromRoom(cost)
+                        viewModel.deleteCostFromFireStore(requireContext(),cost)
                     }
                     ItemTouchHelper.RIGHT ->{
                         val cost = costAdapter.getCostFromPosition(viewHolder.adapterPosition)
-                        viewModel.deleteCostFromRoom(cost)
+                        viewModel.deleteCostFromFireStore(requireContext(),cost)
                     }
                 }
 
@@ -127,7 +127,7 @@ class CostsFragment : Fragment() {
         touchHelper.attachToRecyclerView(binding.recyclerView)
 
         costAdapter.setOnItemClickListener(object : CostAdapter.onItemClickListener{
-            override fun onItemClick(costUuid: Int) {
+            override fun onItemClick(costUuid: String) {
                 val action = CostsFragmentDirections.actionOpeningCostsFragmentToCostsDetailFragment(costUuid)
                 Navigation.findNavController(requireView()).navigate(action)
             }
