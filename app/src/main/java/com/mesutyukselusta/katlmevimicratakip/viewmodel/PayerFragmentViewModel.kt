@@ -67,7 +67,7 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
 
     fun deletePayerFromFireStore(context: Context,fireStoreDocumentNo: String){
         db.collection("PayerInfo").document(fireStoreDocumentNo).delete().addOnSuccessListener {
-            Toast.makeText(context,"Başarıyla Masraf Silindi",Toast.LENGTH_LONG).show()
+            Toast.makeText(context,"Başarıyla Borçlu Silindi",Toast.LENGTH_LONG).show()
             getAllPayersFromFireStore(context)
 
         } . addOnFailureListener {

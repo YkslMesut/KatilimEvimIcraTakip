@@ -47,7 +47,7 @@ class CostCalculateFragment : Fragment(),DatePickerDialog.OnDateSetListener {
 
         arguments?.let {
             val fireStoreDocumentNo = CostCalculateFragmentArgs.fromBundle(it).fireStoreDocumentNo
-            viewModel.getPayerInfo(fireStoreDocumentNo)
+            viewModel.getPayerFromFireStore(fireStoreDocumentNo)
         }
         val interest = 0.57
         if (interest < 1) {
