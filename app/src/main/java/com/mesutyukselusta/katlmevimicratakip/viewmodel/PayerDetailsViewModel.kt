@@ -194,26 +194,26 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
 
     private fun castPayerData(document : DocumentSnapshot) : PayerInfo{
 
-            val fireStoreDocumentNo = document.reference.path.substring(10)
-            val costs  = (document.get("costs") as Number).toInt()
-            val createdMainDebt  = (document.get("created_main_debt") as Number).toInt()
-            val documentCreationDate  = document.get("document_creation_date") as String
-            val documentNo  = (document.get("document_no") as Number).toInt()
-            val documentStatus  = document.get("document_status") as String
-            val documentType  = document.get("document_type") as String
-            val documentTypeIsBill  = document.get("document_type_is_bill") as Boolean
-            val documentYear  = (document.get("document_year") as Number).toInt()
-            val interest  = (document.get("interest") as Number).toInt()
-            val isForeclosure  = document.get("is_foreclosure") as Boolean
-            val mainDebt  = (document.get("main_debt") as Number).toInt()
-            val name  = document.get("name") as String
-            val proxyCost = (document.get("proxy_cost") as Number).toInt()
-            val surname  = document.get("surname") as String
-            val trackingAmount = (document.get("tracking_amount") as Number).toInt()
-            val tuitionFee = (document.get("tuition_fee") as Number).toInt()
+        val fireStoreDocumentNo = document.reference.path.substring(10)
+        val costs  = (document.get("costs") as Number).toInt()
+        val createdMainDebt  = (document.get("created_main_debt") as Number).toInt()
+        val documentCreationDate  = document.get("document_creation_date") as String
+        val documentNo  = (document.get("document_no") as Number).toInt()
+        val documentStatus  = document.get("document_status") as String
+        val documentType  = document.get("document_type") as String
+        val documentTypeIsBill  = document.get("document_type_is_bill") as Boolean
+        val documentYear  = (document.get("document_year") as Number).toInt()
+        val interest  = (document.get("interest") as Number).toInt()
+        val isForeclosure  = document.get("is_foreclosure") as Boolean
+        val mainDebt  = (document.get("main_debt") as Number).toInt()
+        val name  = document.get("name") as String
+        val proxyCost = (document.get("proxy_cost") as Number).toInt()
+        val surname  = document.get("surname") as String
+        val trackingAmount = (document.get("tracking_amount") as Number).toInt()
+        val tuitionFee = (document.get("tuition_fee") as Number).toInt()
 
-            val payer = PayerInfo(name,surname,documentNo,documentYear,documentType,mainDebt,interest,proxyCost,
-                costs,tuitionFee,documentCreationDate,documentTypeIsBill,createdMainDebt,isForeclosure,trackingAmount,documentStatus,fireStoreDocumentNo)
+        val payer = PayerInfo(name,surname,documentNo,documentYear,documentType,mainDebt,interest,proxyCost,
+            costs,tuitionFee,documentCreationDate,documentTypeIsBill,createdMainDebt,isForeclosure,trackingAmount,documentStatus,fireStoreDocumentNo)
 
 
         return payer
@@ -242,7 +242,7 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
                 fireStoreDocumentNo,
                 advanceFee,
                 protestCost,
-            fireStoreCostDocumentNo)
+                fireStoreCostDocumentNo)
 
             costsList.add(cost)
         }
