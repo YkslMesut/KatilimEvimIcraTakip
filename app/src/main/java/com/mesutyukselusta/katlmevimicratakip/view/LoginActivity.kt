@@ -55,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         } . addOnFailureListener {
-            Toast.makeText(this@LoginActivity,it.localizedMessage,Toast.LENGTH_LONG).show()
+            Toast.makeText(this@LoginActivity,it.localizedMessage,Toast.LENGTH_SHORT).show()
         }
 
     }

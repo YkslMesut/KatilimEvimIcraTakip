@@ -91,17 +91,17 @@ class AddCostFragment : Fragment(),DatePickerDialog.OnDateSetListener {
 
         viewModel.addCostInsertControl.observe(viewLifecycleOwner, Observer {isInsertDatabase->
             if (isInsertDatabase){
-                Toast.makeText(context,"Başarıyla Masraf Eklendi",Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"Başarıyla Masraf Eklendi",Toast.LENGTH_SHORT).show()
                 NavHostFragment.findNavController(this@AddCostFragment).navigateUp()
             }
         })
         viewModel.addCostInputControl.observe(viewLifecycleOwner, Observer {
             if (!it){
-                Toast.makeText(requireContext(),"Lütfen Boş Alanları Doldurunuz",Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),"Lütfen Boş Alanları Doldurunuz",Toast.LENGTH_SHORT).show()
             }
         })
         viewModel.addCostStatusMessage.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(requireContext(),it,Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),it,Toast.LENGTH_SHORT).show()
         })
     }
 
@@ -141,7 +141,7 @@ class AddCostFragment : Fragment(),DatePickerDialog.OnDateSetListener {
         documentTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                Toast.makeText(requireContext(),p0?.getItemAtPosition(p2).toString(), Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),p0?.getItemAtPosition(p2).toString(), Toast.LENGTH_SHORT).show()
                 // Document Type Select And Bill Control
                 when (p2) {
                     0 -> {
