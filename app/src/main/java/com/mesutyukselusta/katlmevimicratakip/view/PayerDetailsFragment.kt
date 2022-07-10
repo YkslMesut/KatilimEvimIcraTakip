@@ -13,7 +13,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import com.mesutyukselusta.katlmevimicratakip.databinding.FragmentPayerDetailsBinding
 import com.mesutyukselusta.katlmevimicratakip.model.PayerInfo
-import com.mesutyukselusta.katlmevimicratakip.model.PayerInfoWithCosts
 import com.mesutyukselusta.katlmevimicratakip.util.MoneyTextWatcher
 import com.mesutyukselusta.katlmevimicratakip.viewmodel.PayerDetailsViewModel
 import java.math.BigDecimal
@@ -46,6 +45,7 @@ class PayerDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(PayerDetailsViewModel::class.java)
+        observeLiveData()
 
         arguments?.let {
             fireStoreDocumentNo = PayerDetailsFragmentArgs.fromBundle(it).fireStoreDocumentNo
@@ -53,7 +53,6 @@ class PayerDetailsFragment : Fragment() {
 
         }
 
-        observeLiveData()
 
 
         mainDebtTextWatcher = MoneyTextWatcher(binding.etMainDebt)
@@ -71,7 +70,6 @@ class PayerDetailsFragment : Fragment() {
                 val costs = (binding.txtCosts.text.toString())
                 val isForeClosure = (binding.checkBoxIsForeclosure.isChecked)
                 viewModel.updatePayer(selectedPayer,mainDebt,proxy,isForeClosure,costs)
-                observeLiveData()
             }
         }
 
@@ -101,7 +99,7 @@ class PayerDetailsFragment : Fragment() {
             }
         })
         viewModel.payerLiveDataStatusMessage.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(requireContext(),it,Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),it,Toast.LENGTH_SHORT).show()
         })
     }
 

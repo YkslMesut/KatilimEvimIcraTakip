@@ -9,6 +9,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.mesutyukselusta.katlmevimicratakip.model.Costs
 import com.mesutyukselusta.katlmevimicratakip.model.PayerInfo
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -27,22 +28,24 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
 
 
     fun getPayerFromFireStore(fireStoreDocumentNo: String){
-        db.collection("PayerInfo").document(fireStoreDocumentNo).get().addOnSuccessListener { result ->
-            if (result != null){
+        launch {
+            db.collection("PayerInfo").document(fireStoreDocumentNo).get().addOnSuccessListener { result ->
+                if (result != null){
 
-                val payer = castPayerData(result)
-                val calculatedInterest = calculateInterest(payer.created_main_debt!!,
-                    payer.document_type_is_bill!!,payer.document_creation_date!!)
+                    val payer = castPayerData(result)
+                    val calculatedInterest = calculateInterest(payer.created_main_debt!!,
+                        payer.document_type_is_bill!!,payer.document_creation_date!!)
 
-                if (calculatedInterest != payer.interest){
-                    payer.interest = calculatedInterest
-                    updateInterestFromFireStore(payer,calculatedInterest)
-                } else {
-                    showPayers(payer)
+                    if (calculatedInterest != payer.interest){
+                        payer.interest = calculatedInterest
+                        updateInterestFromFireStore(payer,calculatedInterest)
+                    } else {
+                        showPayers(payer)
+                    }
                 }
+            }.addOnFailureListener {
+                payerLiveDataStatusMessage.postValue(it.localizedMessage)
             }
-        }.addOnFailureListener {
-            payerLiveDataStatusMessage.value = it.localizedMessage
         }
     }
 
@@ -50,20 +53,22 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
     private fun getCostsFromFireStore(fireStoreDocumentNo: String) : List<Costs>{
         var costList = ArrayList<Costs>()
 
-        db.collection("Costs").whereEqualTo("firestore_document_no",fireStoreDocumentNo).get()
-            .addOnSuccessListener { result ->
-                if (!result.isEmpty){
-                    val documents = result.documents
-                    costList = castCostData(documents)
+        launch {
+            db.collection("Costs").whereEqualTo("firestore_document_no",fireStoreDocumentNo).get()
+                .addOnSuccessListener { result ->
+                    if (!result.isEmpty){
+                        val documents = result.documents
+                        costList = castCostData(documents)
 
-                } else {
-                    val emptyResult = "Hiç Masraf Bulunmamaktadır"
-                    payerLiveDataStatusMessage.value = emptyResult
+                    } else {
+                        val emptyResult = "Hiç Masraf Bulunmamaktadır"
+                        payerLiveDataStatusMessage.postValue(emptyResult)
+                    }
                 }
-            }
-            .addOnFailureListener {
-                payerLiveDataStatusMessage.value = it.localizedMessage
-            }
+                .addOnFailureListener {
+                    payerLiveDataStatusMessage.postValue(it.localizedMessage)
+                }
+        }
         return costList
     }
 
@@ -76,55 +81,59 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
     fun updatePayer(payerInfo: PayerInfo ,mainDebt : String,
                     proxy : String,isForeClosure : Boolean ,costs : String){
 
-        if (payerInfo != null && mainDebt.isNotEmpty()  && proxy.isNotEmpty()){
+        launch {
+            if (payerInfo != null && mainDebt.isNotEmpty()  && proxy.isNotEmpty()){
 
-            val  mainDebtClean = cleanCastingAmountText(mainDebt)
+                val  mainDebtClean = cleanCastingAmountText(mainDebt)
 
-            if (payerInfo.created_main_debt!! >= Integer.parseInt(mainDebtClean)){
+                if (payerInfo.created_main_debt!! >= Integer.parseInt(mainDebtClean)){
 
-                val costsClean = cleanCastingAmountText(costs)
-                var mCost = costsClean
-                if (mCost.isEmpty()){
-                    mCost = "0"
+                    val costsClean = cleanCastingAmountText(costs)
+                    var mCost = costsClean
+                    if (mCost.isEmpty()){
+                        mCost = "0"
+                    }
+
+                    val selectedPayerInfo = payerInfo
+                    val proxyClean = cleanCastingAmountText(proxy)
+                    val advanceFee = calculateAdvanceFee(getCostsFromFireStore(payerInfo.firestore_document_no))
+                    val tuitionFeeClean = payerInfo.calculateTuitionFee( payerInfo.tracking_amount,
+                        isForeClosure,advanceFee)
+                    val newPayer = PayerInfo(selectedPayerInfo.name,selectedPayerInfo.surname,
+                        selectedPayerInfo.document_no,selectedPayerInfo.document_year,
+                        selectedPayerInfo.document_type,Integer.parseInt(mainDebtClean),
+                        calculateInterest(selectedPayerInfo.created_main_debt!!,selectedPayerInfo.document_type_is_bill!!,
+                            selectedPayerInfo.document_creation_date!!),
+                        Integer.parseInt(proxyClean),
+                        Integer.parseInt(mCost),
+                        tuitionFeeClean,selectedPayerInfo.document_creation_date,selectedPayerInfo.document_type_is_bill,
+                        selectedPayerInfo.created_main_debt,isForeClosure,selectedPayerInfo.tracking_amount,selectedPayerInfo.document_status,selectedPayerInfo.firestore_document_no)
+                    newPayer.firestore_document_no = selectedPayerInfo.firestore_document_no
+                    updatePayerFromFireStore(newPayer)
+                } else {
+                    updateControl.postValue(false)
+                    val debtControl = "Girilen Ana Borç Oluştulan Borçtan Fazla olamaz"
+                    payerLiveDataStatusMessage.postValue(debtControl)
                 }
-
-                val selectedPayerInfo = payerInfo
-                val proxyClean = cleanCastingAmountText(proxy)
-                val advanceFee = calculateAdvanceFee(getCostsFromFireStore(payerInfo.firestore_document_no))
-                val tuitionFeeClean = payerInfo.calculateTuitionFee( payerInfo.tracking_amount,
-                    isForeClosure,advanceFee)
-                val newPayer = PayerInfo(selectedPayerInfo.name,selectedPayerInfo.surname,
-                    selectedPayerInfo.document_no,selectedPayerInfo.document_year,
-                    selectedPayerInfo.document_type,Integer.parseInt(mainDebtClean),
-                    calculateInterest(selectedPayerInfo.created_main_debt!!,selectedPayerInfo.document_type_is_bill!!,
-                        selectedPayerInfo.document_creation_date!!),
-                    Integer.parseInt(proxyClean),
-                    Integer.parseInt(mCost),
-                    tuitionFeeClean,selectedPayerInfo.document_creation_date,selectedPayerInfo.document_type_is_bill,
-                    selectedPayerInfo.created_main_debt,isForeClosure,selectedPayerInfo.tracking_amount,selectedPayerInfo.document_status,selectedPayerInfo.firestore_document_no)
-                newPayer.firestore_document_no = selectedPayerInfo.firestore_document_no
-                updatePayerFromFireStore(newPayer)
             } else {
-                updateControl.value = false
-                val debtControl = "Girilen Ana Borç Oluştulan Borçtan Fazla olamaz"
-                payerLiveDataStatusMessage.value = debtControl
+                updateControl.postValue(false)
+                val fillTextView = "Lütfen Gerekli Alanları Doldurunuz"
+                payerLiveDataStatusMessage.postValue(fillTextView)
             }
-        } else {
-            updateControl.value = false
-            val fillTextView = "Lütfen Gerekli Alanları Doldurunuz"
-            payerLiveDataStatusMessage.value = fillTextView
         }
 
     }
 
     private fun updatePayerFromFireStore(payerInfo: PayerInfo){
         val dataMap = createDataMap(payerInfo)
-        db.collection("PayerInfo").document(payerInfo.firestore_document_no).set(dataMap).addOnSuccessListener {
-            updateControl.value = true
-            val success = "Başarıyla Güncellendi"
-            payerLiveDataStatusMessage.value = success
-        } . addOnFailureListener {
-            payerLiveDataStatusMessage.value = it.localizedMessage
+        launch {
+            db.collection("PayerInfo").document(payerInfo.firestore_document_no).set(dataMap).addOnSuccessListener {
+                updateControl.postValue(true)
+                val success = "Başarıyla Güncellendi"
+                payerLiveDataStatusMessage.postValue(success)
+            } . addOnFailureListener {
+                payerLiveDataStatusMessage.postValue(it.localizedMessage)
+            }
         }
     }
 
@@ -185,11 +194,13 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
     }*/
 
     private fun updateInterestFromFireStore(payer: PayerInfo,updatedInterest: Number){
-        db.collection("PayerInfo").document(payer.firestore_document_no).update("interest",updatedInterest).addOnSuccessListener {
-            showPayers(payer)
-        }.addOnFailureListener {
-            payerLiveDataStatusMessage.value = it.localizedMessage
-        }
+       launch {
+           db.collection("PayerInfo").document(payer.firestore_document_no).update("interest",updatedInterest).addOnSuccessListener {
+               showPayers(payer)
+           }.addOnFailureListener {
+               payerLiveDataStatusMessage.postValue(it.localizedMessage)
+           }
+       }
     }
 
     private fun castPayerData(document : DocumentSnapshot) : PayerInfo{
@@ -283,18 +294,20 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
 
     private fun calculateCostAndShowPayer(payerInfo: PayerInfo){
         var totalCost = 0
-        db.collection("Costs").whereEqualTo("firestore_document_no",payerInfo.firestore_document_no).get()
-            .addOnSuccessListener { result ->
-                if (!result.isEmpty){
-                    val documents = result.documents
-                    totalCost = calculateTotalCost(documents)
-                    payerInfo.costs = totalCost
+        launch {
+            db.collection("Costs").whereEqualTo("firestore_document_no",payerInfo.firestore_document_no).get()
+                .addOnSuccessListener { result ->
+                    if (!result.isEmpty){
+                        val documents = result.documents
+                        totalCost = calculateTotalCost(documents)
+                        payerInfo.costs = totalCost
+                    }
                 }
-            }
-            .addOnFailureListener {
-                payerLiveDataStatusMessage.value = it.localizedMessage
-            }
-        payerLiveData.value = payerInfo
+                .addOnFailureListener {
+                    payerLiveDataStatusMessage.postValue(it.localizedMessage)
+                }
+            payerLiveData.postValue(payerInfo)
+        }
     }
 
 

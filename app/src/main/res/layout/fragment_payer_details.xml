@@ -150,7 +150,7 @@
         android:padding="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg2"
+        android:background="@drawable/button"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
@@ -207,7 +207,7 @@
 
     <Button
         android:id="@+id/showCalculates"
-        android:background="@drawable/bg2"
+        android:background="@drawable/button"
         android:textColor="@color/text_color"
         android:layout_gravity="center"
         android:textSize="18dp"
@@ -221,7 +221,7 @@
 
     <Button
         android:id="@+id/btnUpdate"
-        android:background="@drawable/bg2"
+        android:background="@drawable/button"
         android:textColor="@color/text_color"
         android:layout_gravity="center"
         android:textSize="18dp"
