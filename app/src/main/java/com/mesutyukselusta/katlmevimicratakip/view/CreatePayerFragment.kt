@@ -91,14 +91,14 @@ class CreatePayerFragment : Fragment(), DatePickerDialog.OnDateSetListener{
         }
         viewModel.createPayerInputControl.observe(viewLifecycleOwner) {
             if (!it) {
-                Toast.makeText(context, "Lütfen Gerekli Alanları Doldurunuz", Toast.LENGTH_LONG)
+                Toast.makeText(context, "Lütfen Gerekli Alanları Doldurunuz", Toast.LENGTH_SHORT)
                     .show()
             }
         }
         viewModel.createPayerInsertFirebaseErrorMessage.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
-            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -147,7 +147,7 @@ class CreatePayerFragment : Fragment(), DatePickerDialog.OnDateSetListener{
         documentTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                Toast.makeText(requireContext(),p0?.getItemAtPosition(p2).toString(), Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),p0?.getItemAtPosition(p2).toString(), Toast.LENGTH_SHORT).show()
                 // Document Type Select And Bill Control
                 when (p2) {
                     0 -> {

@@ -150,7 +150,7 @@
     <Button
         android:textColor="@color/text_color"
         android:textSize="18dp"
-        android:background="@drawable/bg2"
+        android:background="@drawable/button"
         android:id="@+id/btnSave"
         android:text="Kaydet"
         android:layout_width="match_parent"

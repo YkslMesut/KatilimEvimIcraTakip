@@ -110,7 +110,7 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
     fun signOut(){
         launch {
             auth.signOut()
-            signOutLiveData.postValue(false)
+            signOutLiveData.postValue(true)
         }
 
     }

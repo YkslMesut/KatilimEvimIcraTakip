@@ -13,6 +13,7 @@ import kotlin.math.log
 
 class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(application) {
      val createPayerInputControl = MutableLiveData<Boolean>()
+     var inputControl : Boolean = false
      val createPayerInsertControl = MutableLiveData<Boolean>()
      val createPayerInsertFirebaseErrorMessage = MutableLiveData<String>()
 
@@ -23,7 +24,7 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
 
     fun validateControl(name : String,surname : String,documentType : String,documentNo : String,documentYear : String,
                         dateDay : Int, dateMonth : Int, dateYear : Int,documentTypeIsBill : Boolean,createdMainDebt : String,trackingAmount : String)  {
-        createPayerInputControl.value = name.isNotEmpty() && surname.isNotEmpty() &&
+        inputControl = name.isNotEmpty() && surname.isNotEmpty() &&
                 documentType.isNotEmpty() && documentNo.isNotEmpty() && documentYear.isNotEmpty() && createdMainDebt.isNotEmpty() && trackingAmount.isNotEmpty()
                 && documentNo != "-1"
                 && documentYear != "-1"
@@ -33,12 +34,18 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
                 && dateMonth != -1
                 && dateYear != -1
 
-        if (createPayerInputControl.value == true) {
-            var cleanMainDebt  = cleanCastingAmountText(createdMainDebt)
-            var cleanTrackingAmount  = cleanCastingAmountText(trackingAmount)
-            insertPayer(name,surname,documentType,Integer.parseInt(documentNo),
-                Integer.parseInt(documentYear),dateDay,dateMonth,dateYear,documentTypeIsBill,Integer.parseInt(cleanMainDebt),Integer.parseInt(cleanTrackingAmount))
+        launch {
+            if (inputControl) {
+                createPayerInputControl.postValue(true)
+                var cleanMainDebt  = cleanCastingAmountText(createdMainDebt)
+                var cleanTrackingAmount  = cleanCastingAmountText(trackingAmount)
+                insertPayer(name,surname,documentType,Integer.parseInt(documentNo),
+                    Integer.parseInt(documentYear),dateDay,dateMonth,dateYear,documentTypeIsBill,Integer.parseInt(cleanMainDebt),Integer.parseInt(cleanTrackingAmount))
+            } else {
+                createPayerInputControl.postValue(false)
+            }
         }
+
 
     }
 
@@ -80,16 +87,19 @@ class CreatePayerFragmentViewModel(application: Application) : BaseViewModel(app
         dataMap["tracking_amount"] = payerInfo.tracking_amount!!
         dataMap["document_status"] = payerInfo.document_status!!
 
-        db.collection("PayerInfo").add(dataMap).addOnSuccessListener {
-            createPayerInsertControl.value = true
-            // Set fireStoreDocumentNo
-            val fireStoreDocumentNo =  it.path.substring(10)
-            payerInfo.firestore_document_no = fireStoreDocumentNo
-            insertPayerToDB(payerInfo)
+        launch {
+            db.collection("PayerInfo").add(dataMap).addOnSuccessListener {
+                createPayerInsertControl.postValue(true)
+                // Set fireStoreDocumentNo
+                val fireStoreDocumentNo =  it.path.substring(10)
+                payerInfo.firestore_document_no = fireStoreDocumentNo
+                insertPayerToDB(payerInfo)
 
-        }.addOnFailureListener {
-            createPayerInsertFirebaseErrorMessage.value = it.localizedMessage
+            }.addOnFailureListener {
+                createPayerInsertFirebaseErrorMessage.postValue(it.localizedMessage)
+            }
         }
+
     }
 
     private fun insertPayerToDB(payerInfo: PayerInfo){

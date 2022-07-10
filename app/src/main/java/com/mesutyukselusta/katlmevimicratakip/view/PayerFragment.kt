@@ -56,6 +56,7 @@ class PayerFragment : Fragment() {
 
         viewModel = ViewModelProvider(this).get(PayerFragmentViewModel::class.java)
         observeLiveData()
+
         viewModel.getAllPayersFromFireStore()
 
         adapterView()
