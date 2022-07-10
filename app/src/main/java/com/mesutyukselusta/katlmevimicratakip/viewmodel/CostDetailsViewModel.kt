@@ -25,17 +25,21 @@ class CostDetailsViewModel(application: Application) : BaseViewModel(application
     }*/
 
     fun getCost(costUuid: String){
-        db.collection("Costs").document(costUuid).get().addOnSuccessListener { result ->
-            if (result != null){
-              showCost(castCostData(result))
+        launch {
+            db.collection("Costs").document(costUuid).get().addOnSuccessListener { result ->
+                if (result != null){
+                    showCost(castCostData(result))
+                }
+            }.addOnFailureListener {
+                costLiveDataStatusMessage.postValue(it.localizedMessage)
             }
-        }.addOnFailureListener {
-            costLiveDataStatusMessage.value = it.localizedMessage
         }
     }
 
     private fun showCost(cost : Costs) {
-        costLiveData.value = cost
+        launch {
+            costLiveData.postValue(cost)
+        }
     }
 
     fun updateCost(cost : Costs, newCostName : String, newCostAmount : String,
@@ -102,12 +106,14 @@ class CostDetailsViewModel(application: Application) : BaseViewModel(application
 
     private fun updateCostFromFireStore(cost: Costs){
         val dataMap = createDataMap(cost)
-        db.collection("Costs").document(cost.firestore_cost_document_no).set(dataMap).addOnSuccessListener {
-            updateControl.value = true
-            val success = "Başarıyla Güncellendi"
-            costLiveDataStatusMessage.value = success
-        } . addOnFailureListener {
-            costLiveDataStatusMessage.value = it.localizedMessage
+        launch {
+            db.collection("Costs").document(cost.firestore_cost_document_no).set(dataMap).addOnSuccessListener {
+                updateControl.postValue(true)
+                val success = "Başarıyla Güncellendi"
+                costLiveDataStatusMessage.postValue(success)
+            } . addOnFailureListener {
+                costLiveDataStatusMessage.postValue(it.localizedMessage)
+            }
         }
     }
 

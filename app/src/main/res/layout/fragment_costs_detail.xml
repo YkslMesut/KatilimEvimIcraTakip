@@ -108,7 +108,7 @@
         android:layout_gravity="center"
         android:textSize="18dp"
         android:textColor="@color/text_color"
-        android:backgroundTint="@color/card_color"
+        android:background="@drawable/button"
         android:text="Güncelle"
         android:layout_width="match_parent"
         android:layout_height="50dp"/>

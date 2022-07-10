@@ -46,16 +46,15 @@ class CostsDetailsFragment : Fragment(), DatePickerDialog.OnDateSetListener{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         viewModel = ViewModelProvider(this).get(CostDetailsViewModel::class.java)
+        observeLiveData()
 
         arguments?.let {
             selectedCostUuid = CostsDetailsFragmentArgs.fromBundle(it).firestoreCostDocumentNo
             viewModel.getCost(selectedCostUuid)
 
         }
-
-        observeLiveData()
-
 
         costAmountTextWatcher = MoneyTextWatcher(binding.etAmountOfExpense)
         binding.etAmountOfExpense.addTextChangedListener(costAmountTextWatcher)
@@ -68,7 +67,6 @@ class CostsDetailsFragment : Fragment(), DatePickerDialog.OnDateSetListener{
 
                 viewModel.updateCost(selectedCost,costName,costAmount,dateDay,
                     dateMonth,dateYear)
-                observeLiveData()
             }
         }
 
