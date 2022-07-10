@@ -73,6 +73,11 @@ class CostsFragment : Fragment() {
 
         })
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.getCostsFromFireStore(fireStoreDocumentNo)
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
+
     }
 
     override fun onDestroyView() {
