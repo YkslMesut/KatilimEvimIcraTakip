@@ -19,6 +19,7 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
     val payerListLiveData = MutableLiveData<List<PayerInfo>>()
     val signOutLiveData = MutableLiveData<Boolean>()
     val payersStatusMessage = MutableLiveData<String>()
+    val payerEmptyResultControl = MutableLiveData<Boolean>()
     private val auth = Firebase.auth
     private val db = Firebase.firestore
 
@@ -38,10 +39,11 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
             db.collection("PayerInfo").get()
                 .addOnSuccessListener { result ->
                     if (!result.isEmpty){
+                        payerEmptyResultControl.postValue(false)
                         val documents = result.documents
                         showPayers(castData(documents))
                     } else {
-                        payersStatusMessage.postValue("Hiç Borçlu Bulunmamaktadır")
+                        payerEmptyResultControl.postValue(true)
                         showPayers(emptyPayerList)
                     }
                 }

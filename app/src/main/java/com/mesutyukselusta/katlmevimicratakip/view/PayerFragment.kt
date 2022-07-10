@@ -135,8 +135,12 @@ class PayerFragment : Fragment() {
         }
 
         viewModel.payersStatusMessage.observe(viewLifecycleOwner) { statusResponseMessage ->
-            statusResponseMessage?.let {
-                showError(statusResponseMessage)
+            Toast.makeText(context,statusResponseMessage,Toast.LENGTH_SHORT).show()
+        }
+
+        viewModel.payerEmptyResultControl.observe(viewLifecycleOwner) { isEmptyResult ->
+            if (isEmptyResult) {
+                showError()
             }
         }
     }
@@ -179,10 +183,11 @@ class PayerFragment : Fragment() {
         return alert
     }
 
-    private fun showError(errorMessage : String) {
+    private fun showError() {
+        val emptyPayer = "Hiç Borçlu Bulunmamaktadır"
         binding.recyclerView.visibility = View.GONE
         binding.payersError.visibility = View.VISIBLE
-        binding.payersError.text = errorMessage
+        binding.payersError.text = emptyPayer
     }
 
 
