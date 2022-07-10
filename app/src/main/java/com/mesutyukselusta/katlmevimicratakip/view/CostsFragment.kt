@@ -97,7 +97,14 @@ class CostsFragment : Fragment() {
 
     private fun observeLiveData() {
         viewModel.costLiveData.observe(viewLifecycleOwner, Observer {costs->
-            costAdapter.updateCostAdapter(costs)
+            if (costs.isNotEmpty()) {
+                binding.recyclerView.visibility = View.VISIBLE
+                binding.payersError.visibility = View.GONE
+                costAdapter.updateCostAdapter(costs)
+            }
+        })
+        viewModel.costStatusMessage.observe(viewLifecycleOwner, Observer {errMessage->
+            showError(errMessage)
         })
     }
 
@@ -139,7 +146,11 @@ class CostsFragment : Fragment() {
 
     }
 
-
+    private fun showError(errorMessage : String) {
+        binding.recyclerView.visibility = View.GONE
+        binding.payersError.visibility = View.VISIBLE
+        binding.payersError.text = errorMessage
+    }
 
 
 }
