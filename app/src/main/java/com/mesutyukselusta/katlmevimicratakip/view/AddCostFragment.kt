@@ -48,7 +48,9 @@ class AddCostFragment : Fragment(),DatePickerDialog.OnDateSetListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(AddCostViewModel::class.java)
+
+        viewModel = ViewModelProvider(this)[AddCostViewModel::class.java]
+        observeLiveData()
 
         arguments?.let {
             fireStoreDocumentNo = AddCostFragmentArgs.fromBundle(it).fireStoreDocumentNo
@@ -61,7 +63,6 @@ class AddCostFragment : Fragment(),DatePickerDialog.OnDateSetListener {
             takeInfoFromEditTexts()
 
             viewModel.validateControl(requireContext(),costName,costAmount,fireStoreDocumentNo,dateDay,dateMonth,dateYear,isAdvanceFee,isProtestCost)
-            observeLiveData()
         }
         binding.btnPickDate.setOnClickListener {
             showDatePicker()

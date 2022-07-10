@@ -2,8 +2,6 @@ package com.mesutyukselusta.katlmevimicratakip.viewmodel
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
@@ -40,7 +38,7 @@ class AddCostViewModel(application: Application) : BaseViewModel(application) {
     private fun insertCost(context: Context,costName : String, costAmount: String, fireStoreDocumentNo : String, dateDay : Int, dateMonth : Int, dateYear : Int,isAdvanceFee : Boolean,isProtestCost: Boolean){
         val mCostAmount = Integer.parseInt(costAmount)
         val costs = Costs(mCostAmount,costName,dateDay,dateMonth,dateYear,fireStoreDocumentNo,isAdvanceFee,isProtestCost,"")
-        insertCostToFireStore(context,costs)
+        insertCostToFireStore(costs)
 
     }
     private fun insertCostToLocalDB(cost: Costs) {
@@ -49,7 +47,7 @@ class AddCostViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    private fun insertCostToFireStore(context: Context,cost: Costs){
+    private fun insertCostToFireStore(cost: Costs){
 
         //Create DataMap
         val dataMap = hashMapOf<String,Any>()
