@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.SearchView
 import android.widget.Toast
@@ -27,6 +28,8 @@ import com.mesutyukselusta.katlmevimicratakip.viewmodel.PayerFragmentViewModel
 class PayerFragment : Fragment() {
     private lateinit var viewModel : PayerFragmentViewModel
     private val payerAdapter = PayerAdapter(arrayListOf())
+
+    private  val TAG = "PayerFragment"
 
     private var _binding: FragmentPayerBinding? = null
     private val binding get() = _binding!!
@@ -75,6 +78,10 @@ class PayerFragment : Fragment() {
 
         })
 
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.getAllPayersFromFireStore()
+            binding.refreshLayout.isRefreshing = false
+        }
     }
 
     private fun adapterView(){
@@ -129,6 +136,7 @@ class PayerFragment : Fragment() {
                     binding.recyclerView.visibility = View.VISIBLE
                     binding.payersError.visibility = View.GONE
                     payerAdapter.updatePayerAdapter(it)
+                    Log.d(TAG, "observeLiveData: " + payers.size)
                 }
 
             }
