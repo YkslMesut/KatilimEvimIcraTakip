@@ -20,88 +20,99 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
     val signOutLiveData = MutableLiveData<Boolean>()
     val payersError = MutableLiveData<Boolean>()
     val payersLoading = MutableLiveData<Boolean>()
+    val payersStatusMessage = MutableLiveData<String>()
     private val auth = Firebase.auth
     private val db = Firebase.firestore
 
-    val emptyPayerList = ArrayList<PayerInfo>()
+    private val emptyPayerList = ArrayList<PayerInfo>()
 
 
-    // Get Data Fun
-    fun getAllPayersFromLocalDb() {
+    // Get Data Fun With Db
+    /*private fun getAllPayersFromLocalDb() {
         launch {
             val payers = PayerDatabase(getApplication()).payerDao().getAllPayers()
             showPayers(payers)
         }
-    }
+    }*/
 
-    fun getAllPayersFromFireStore(context : Context){
-        db.collection("PayerInfo").get()
-            .addOnSuccessListener { result ->
-                if (!result.isEmpty){
-                    val documents = result.documents
-                    showPayers(castData(documents))
-                } else {
-                    Toast.makeText(context,"Hiç Borçlu Dosyası Bulunmamaktadır",Toast.LENGTH_LONG).show()
-                    showPayers(emptyPayerList)
+    fun getAllPayersFromFireStore(){
+        launch {
+            db.collection("PayerInfo").get()
+                .addOnSuccessListener { result ->
+                    if (!result.isEmpty){
+                        val documents = result.documents
+                        showPayers(castData(documents))
+                    } else {
+                        payersStatusMessage.postValue("Hiç Borçlu Bulunmamaktadır")
+                        showPayers(emptyPayerList)
+                    }
                 }
-            }
-            .addOnFailureListener {
-                Toast.makeText(context,it.localizedMessage,Toast.LENGTH_LONG).show()
-            }
+                .addOnFailureListener {
+                    payersStatusMessage.postValue(it.localizedMessage)
+                }
+        }
+
     }
 
     private fun showPayers(payerList: List<PayerInfo>) {
-        payerListLiveData.value = payerList
-        payersError.value = false
-        payersLoading.value = false
+        launch {
+            payerListLiveData.postValue(payerList)
+            payersError.postValue(false)
+            payersLoading.postValue(false)
+        }
     }
 
     // Delete Data Fun
-
-    fun deletePayerFromLocalDB(fireStoreDocumentNo : String){
+    /*fun deletePayerFromLocalDB(fireStoreDocumentNo : String){
         launch {
             PayerDatabase(getApplication()).payerDao().deletePayer(fireStoreDocumentNo)
             getAllPayersFromLocalDb()
         }
-    }
+    }*/
 
-    fun deletePayerFromFireStore(context: Context,fireStoreDocumentNo: String){
-        db.collection("PayerInfo").document(fireStoreDocumentNo).delete().addOnSuccessListener {
-            Toast.makeText(context,"Başarıyla Borçlu Silindi",Toast.LENGTH_LONG).show()
-            getAllPayersFromFireStore(context)
+    fun deletePayerFromFireStore(fireStoreDocumentNo: String){
+        launch {
+            db.collection("PayerInfo").document(fireStoreDocumentNo).delete().addOnSuccessListener {
+                payersStatusMessage.postValue("Borçlu Başarıyla Silindi")
+                getAllPayersFromFireStore()
 
-        } . addOnFailureListener {
-            Toast.makeText(context,it.localizedMessage,Toast.LENGTH_LONG).show()
-            getAllPayersFromFireStore(context)
+            } . addOnFailureListener {
+                payersStatusMessage.postValue(it.localizedMessage)
+                getAllPayersFromFireStore()
 
+            }
         }
+
     }
 
 
     // Update Data Fun
-
-    fun updateDocumentStatusFromLocalDB(payerInfo : PayerInfo,documentStatus : String) {
+    /*fun updateDocumentStatusFromLocalDB(payerInfo : PayerInfo,documentStatus : String) {
         launch {
             payerInfo.document_status = documentStatus
             PayerDatabase(getApplication()).payerDao().updatePayer(payerInfo)
             getAllPayersFromLocalDb()
         }
-    }
+    }*/
 
     fun updateDocumentStatusFromFireStore(context: Context,fireStoreDocumentNo : String,documentStatus: String){
         db.collection("PayerInfo").document(fireStoreDocumentNo).update("document_status",documentStatus).addOnSuccessListener {
-            getAllPayersFromFireStore(context)
+            payersStatusMessage.postValue("Dosya Durumu Değiştirildi")
+            getAllPayersFromFireStore()
         } .addOnFailureListener {
-            Toast.makeText(context,it.localizedMessage,Toast.LENGTH_LONG).show()
-            getAllPayersFromFireStore(context)
+            payersStatusMessage.postValue(it.localizedMessage)
+            getAllPayersFromFireStore()
         }
     }
 
     // SignOut
 
     fun signOut(){
-        auth.signOut()
-        signOutLiveData.value = false
+        launch {
+            auth.signOut()
+            signOutLiveData.postValue(false)
+        }
+
     }
 
     private fun castData(documents : List<DocumentSnapshot>) : ArrayList<PayerInfo>{

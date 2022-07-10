@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -54,11 +55,11 @@ class PayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(PayerFragmentViewModel::class.java)
-        viewModel.getAllPayersFromFireStore(requireContext())
+        observeLiveData()
+        viewModel.getAllPayersFromFireStore()
 
         adapterView()
 
-        observeLiveData()
 
         binding.payerSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
@@ -90,7 +91,7 @@ class PayerFragment : Fragment() {
                     }
                     ItemTouchHelper.RIGHT ->{
                         val item = payerAdapter.getPayerFromPosition(viewHolder.adapterPosition)
-                        viewModel.deletePayerFromFireStore(requireContext(),item.firestore_document_no)
+                        viewModel.deletePayerFromFireStore(item.firestore_document_no)
                     }
                 }
             }
@@ -154,6 +155,12 @@ class PayerFragment : Fragment() {
                 }
             }
         }
+
+        viewModel.payersStatusMessage.observe(viewLifecycleOwner) { statusResponseMessage ->
+            statusResponseMessage?.let {
+                Toast.makeText(requireContext(),statusResponseMessage,Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -169,7 +176,6 @@ class PayerFragment : Fragment() {
             Navigation.findNavController(requireView()).navigate(action)
         } else if (id == R.id.logout){
             viewModel.signOut()
-            observeLiveData()
         }
 
         return super.onOptionsItemSelected(item)
@@ -188,7 +194,7 @@ class PayerFragment : Fragment() {
                 dialog.dismiss()
             }
             .setOnCancelListener {
-                viewModel.getAllPayersFromFireStore(requireContext())
+                viewModel.getAllPayersFromFireStore()
             }
             .create()
 
