@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 class AddCostViewModel(application: Application) : BaseViewModel(application) {
     private  val TAG = "AddCostViewModel"
     val addCostInputControl = MutableLiveData<Boolean>()
+    var inputControl : Boolean = false
     val addCostInsertControl = MutableLiveData<Boolean>()
     val addCostStatusMessage = MutableLiveData<String>()
 
@@ -21,17 +22,22 @@ class AddCostViewModel(application: Application) : BaseViewModel(application) {
 
     fun validateControl(context: Context,costName : String,costAmount : String,fireStoreDocumentNo: String,
                         dateDay : Int,dateMonth : Int,dateYear : Int,isAdvanceFee : Boolean,isProtestCost : Boolean)  {
-        addCostInputControl.value = costName.isNotEmpty() && costAmount.isNotEmpty() && fireStoreDocumentNo.isNotEmpty() &&
+        inputControl= costName.isNotEmpty() && costAmount.isNotEmpty() && fireStoreDocumentNo.isNotEmpty() &&
                 dateDay != -1 &&
                 dateMonth != -1 &&
                 dateYear != -1
-        if (addCostInputControl.value == true) {
-            var cleanCost  = costAmount
-            cleanCost = cleanCost.substring(1)
-            cleanCost = cleanCost.replace(",","")
-            cleanCost = cleanCost.replace(".","")
-            insertCost(context,costName,cleanCost,fireStoreDocumentNo,dateDay,dateMonth,dateYear,isAdvanceFee,isProtestCost)
-        }
+       launch {
+           if (inputControl) {
+               addCostInputControl.postValue(true)
+               var cleanCost  = costAmount
+               cleanCost = cleanCost.substring(1)
+               cleanCost = cleanCost.replace(",","")
+               cleanCost = cleanCost.replace(".","")
+               insertCost(context,costName,cleanCost,fireStoreDocumentNo,dateDay,dateMonth,dateYear,isAdvanceFee,isProtestCost)
+           } else {
+               addCostInputControl.postValue(false)
+           }
+       }
 
     }
 
@@ -60,29 +66,31 @@ class AddCostViewModel(application: Application) : BaseViewModel(application) {
         dataMap["advance_fee"] =  cost.advance_fee!!
         dataMap["protest_cost"] =  cost.protest_cost!!
 
+        launch {
+            db.collection("Costs").add(dataMap).addOnSuccessListener {
+                // Set fireStoreDocumentNo
+                val fireStoreCostDocumentNo =  it.path.substring(6)
+                cost.firestore_cost_document_no = fireStoreCostDocumentNo
+                // Get Costs From Fire Store And Add Total Cost To Payer Info
+                getCostsFromFireStore(cost.firestore_document_no)
+                // Added To Local DB
+                insertCostToLocalDB(cost)
 
-        db.collection("Costs").add(dataMap).addOnSuccessListener {
-            // Set fireStoreDocumentNo
-            val fireStoreCostDocumentNo =  it.path.substring(6)
-            cost.firestore_cost_document_no = fireStoreCostDocumentNo
-            // Get Costs From Fire Store And Add Total Cost To Payer Info
-            getCostsFromFireStore(cost.firestore_document_no)
-            // Added To Local DB
-            insertCostToLocalDB(cost)
-
-        }.addOnFailureListener {
-            val errorMessage = it.localizedMessage
-            addCostStatusMessage.value = errorMessage
-            addCostInsertControl.value = false
-             }
+            }.addOnFailureListener {
+                addCostStatusMessage.postValue(it.localizedMessage)
+                addCostInsertControl.postValue(false)
+            }
+        }
     }
 
     private fun updatePayersCostValue(fireStoreDocumentNo: String,totalCost : Number){
 
-        db.collection("PayerInfo").document(fireStoreDocumentNo).update("costs",totalCost).addOnSuccessListener {
-            addCostInsertControl.value = true
-        }.addOnFailureListener {
-            addCostStatusMessage.value = it.localizedMessage
+        launch {
+            db.collection("PayerInfo").document(fireStoreDocumentNo).update("costs",totalCost).addOnSuccessListener {
+                addCostInsertControl.postValue(true)
+            }.addOnFailureListener {
+                addCostStatusMessage.postValue(it.localizedMessage)
+            }
         }
 
     }

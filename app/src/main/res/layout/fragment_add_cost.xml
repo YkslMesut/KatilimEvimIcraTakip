@@ -74,7 +74,7 @@
             android:visibility="visible">
             <LinearLayout
                 android:padding="10dp"
-                android:background="@drawable/bg2"
+                android:background="@drawable/button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <TextView
@@ -98,7 +98,7 @@
         android:id="@+id/btnAddCosts"
         android:layout_gravity="center"
         android:textSize="18dp"
-        android:background="@drawable/bg2"
+        android:background="@drawable/button"
         android:text="Masraf Ekle"
         android:textColor="@color/text_color"
         android:layout_width="match_parent"
