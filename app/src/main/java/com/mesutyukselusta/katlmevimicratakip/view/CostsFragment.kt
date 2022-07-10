@@ -51,11 +51,12 @@ class CostsFragment : Fragment() {
 
         }
         viewModel = ViewModelProvider(this).get(CostsViewModel::class.java)
-        viewModel.getCostsFromFireStore(requireContext(),fireStoreDocumentNo)
+        observeLiveData()
+
+        viewModel.getCostsFromFireStore(fireStoreDocumentNo)
 
         adapterView()
 
-        observeLiveData()
 
         binding.payerSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {

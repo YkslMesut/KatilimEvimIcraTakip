@@ -2,19 +2,18 @@ package com.mesutyukselusta.katlmevimicratakip.viewmodel
 
 import android.app.Application
 import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.mesutyukselusta.katlmevimicratakip.db.PayerDatabase
 import com.mesutyukselusta.katlmevimicratakip.model.Costs
-import com.mesutyukselusta.katlmevimicratakip.model.PayerInfo
 import kotlinx.coroutines.launch
 
 class CostsViewModel(application: Application) : BaseViewModel(application) {
     private  val TAG = "CostViewModel"
     val costLiveData = MutableLiveData<List<Costs>>()
+    val costStatusMessage = MutableLiveData<String>()
     val emptyCostList = ArrayList<Costs>()
 
 
@@ -27,26 +26,31 @@ class CostsViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    fun getCostsFromFireStore(context: Context, fireStoreDocumentNo: String){
-        db.collection("Costs").whereEqualTo("firestore_document_no",fireStoreDocumentNo).get()
-            .addOnSuccessListener { result ->
-                if (!result.isEmpty){
-                    val documents = result.documents
-                    showCosts(castCostData(documents))
-                } else {
-                    Toast.makeText(context,"Hiç Masraf Bulunmamaktadır", Toast.LENGTH_LONG).show()
-                    showCosts(emptyCostList)
+    fun getCostsFromFireStore(fireStoreDocumentNo: String){
+       launch {
+           db.collection("Costs").whereEqualTo("firestore_document_no",fireStoreDocumentNo).get()
+               .addOnSuccessListener { result ->
+                   if (!result.isEmpty){
+                       val documents = result.documents
+                       showCosts(castCostData(documents))
+                   } else {
+                       val emptyCost = "Hiç Masraf Bulunmamaktadır"
+                       costStatusMessage.postValue(emptyCost)
+                       showCosts(emptyCostList)
 
-                }
-            }
-            .addOnFailureListener {
-                Toast.makeText(context,it.localizedMessage, Toast.LENGTH_LONG).show()
-            }
+                   }
+               }
+               .addOnFailureListener {
+                  costStatusMessage.postValue(it.localizedMessage)
+               }
+       }
     }
 
 
     private fun showCosts(costs : List<Costs>) {
-        costLiveData.value = costs
+        launch {
+            costLiveData.postValue(costs)
+        }
     }
 
     /*fun deleteCostFromRoom(cost : Costs){
@@ -57,14 +61,17 @@ class CostsViewModel(application: Application) : BaseViewModel(application) {
     }*/
 
     fun deleteCostFromFireStore(context: Context,cost: Costs){
-        db.collection("Costs").document(cost.firestore_cost_document_no).delete()
-            .addOnSuccessListener {
-                Toast.makeText(context,"Başarıyla Masraf Silindi",Toast.LENGTH_LONG).show()
-                getCostsFromFireStore(context,cost.firestore_document_no)
-        }.addOnFailureListener {
-            Toast.makeText(context,it.localizedMessage,Toast.LENGTH_LONG).show()
-                getCostsFromFireStore(context,cost.firestore_document_no)
-        }
+      launch {
+          db.collection("Costs").document(cost.firestore_cost_document_no).delete()
+              .addOnSuccessListener {
+                  val success = "Başarıyla Masraf Silindi"
+                  costStatusMessage.postValue(success)
+                  getCostsFromFireStore(cost.firestore_document_no)
+              }.addOnFailureListener {
+                  costStatusMessage.postValue(it.localizedMessage)
+                  getCostsFromFireStore(cost.firestore_document_no)
+              }
+      }
     }
 
     private fun castCostData(documents : List<DocumentSnapshot>) : ArrayList<Costs>{
