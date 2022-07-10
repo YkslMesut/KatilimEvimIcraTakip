@@ -125,41 +125,18 @@ class PayerFragment : Fragment() {
         viewModel.payerListLiveData.observe(viewLifecycleOwner) { payers ->
 
             payers?.let {
-                if (payers.size < 0){
-                    binding.recyclerView.visibility = View. INVISIBLE
-                } else {
+                if (payers.isNotEmpty()) {
                     binding.recyclerView.visibility = View.VISIBLE
+                    binding.payersError.visibility = View.GONE
                     payerAdapter.updatePayerAdapter(it)
                 }
 
             }
         }
 
-        viewModel.payersError.observe(viewLifecycleOwner) { error ->
-            error?.let {
-                if (it) {
-                    binding.payersError.visibility = View.VISIBLE
-                } else {
-                    binding.payersError.visibility = View.GONE
-                }
-            }
-        }
-
-        viewModel.payersLoading.observe(viewLifecycleOwner) { loading ->
-            loading?.let {
-                if (it) {
-                    binding.payersLoading.visibility = View.VISIBLE
-                    binding.recyclerView.visibility = View.GONE
-                    binding.payersError.visibility = View.GONE
-                } else {
-                    binding.payersLoading.visibility = View.GONE
-                }
-            }
-        }
-
         viewModel.payersStatusMessage.observe(viewLifecycleOwner) { statusResponseMessage ->
             statusResponseMessage?.let {
-                Toast.makeText(requireContext(),statusResponseMessage,Toast.LENGTH_SHORT).show()
+                showError(statusResponseMessage)
             }
         }
     }
@@ -200,6 +177,12 @@ class PayerFragment : Fragment() {
             .create()
 
         return alert
+    }
+
+    private fun showError(errorMessage : String) {
+        binding.recyclerView.visibility = View.GONE
+        binding.payersError.visibility = View.VISIBLE
+        binding.payersError.text = errorMessage
     }
 
 

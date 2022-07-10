@@ -18,8 +18,6 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
 
     val payerListLiveData = MutableLiveData<List<PayerInfo>>()
     val signOutLiveData = MutableLiveData<Boolean>()
-    val payersError = MutableLiveData<Boolean>()
-    val payersLoading = MutableLiveData<Boolean>()
     val payersStatusMessage = MutableLiveData<String>()
     private val auth = Firebase.auth
     private val db = Firebase.firestore
@@ -57,8 +55,6 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
     private fun showPayers(payerList: List<PayerInfo>) {
         launch {
             payerListLiveData.postValue(payerList)
-            payersError.postValue(false)
-            payersLoading.postValue(false)
         }
     }
 
