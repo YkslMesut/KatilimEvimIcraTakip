@@ -9,6 +9,7 @@ import com.google.firebase.ktx.Firebase
 import com.mesutyukselusta.katlmevimicratakip.model.Costs
 import com.mesutyukselusta.katlmevimicratakip.model.MoneyToBeSent
 import com.mesutyukselusta.katlmevimicratakip.model.PayerInfo
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -23,14 +24,17 @@ class CostCalculateViewModel(application: Application) : BaseViewModel(applicati
     private val db = Firebase.firestore
 
     fun getPayerFromFireStore(fireStoreDocumentNo: String){
-        db.collection("PayerInfo").document(fireStoreDocumentNo).get().addOnSuccessListener { result ->
-            if (result != null){
-                val payer = castPayerData(result)
-                selectedPayer = payer
+        launch {
+            db.collection("PayerInfo").document(fireStoreDocumentNo).get().addOnSuccessListener { result ->
+                if (result != null){
+                    val payer = castPayerData(result)
+                    selectedPayer = payer
+                }
+            }.addOnFailureListener {
+                payerLiveDataStatusMessage.postValue(it.localizedMessage)
             }
-        }.addOnFailureListener {
-            payerLiveDataStatusMessage.value = it.localizedMessage
         }
+
     }
 
     fun calculateAllDebt(closingDay: Int, closingMonth : Int, closingYear : Int) {
@@ -44,8 +48,10 @@ class CostCalculateViewModel(application: Application) : BaseViewModel(applicati
     }
 
     private fun calculateAllData (mainDebt : Int , interest : Int , costs : Int, totalDebt : Int){
-        val calculatedData = MoneyToBeSent(mainDebt,interest,costs,totalDebt)
-        moneyToBeSentData.value = calculatedData
+        launch {
+            val calculatedData = MoneyToBeSent(mainDebt,interest,costs,totalDebt)
+            moneyToBeSentData.postValue(calculatedData)
+        }
     }
 
     private fun calculateInterest (createdMainDebt : Int,documentTypeIsBill : Boolean,documentCreatedDay : String,closingDay: Int,
@@ -143,16 +149,19 @@ class CostCalculateViewModel(application: Application) : BaseViewModel(applicati
         interest: Int
     ) : ArrayList<Costs?> {
         var costList: ArrayList<Costs?> = ArrayList()
-        db.collection("Costs").whereEqualTo("firestore_document_no",payerInfo.firestore_document_no).get()
-            .addOnSuccessListener { result ->
-                val documents = result.documents
-                costList.addAll(castCostData(documents))
-                calculateCosts(costList, closingMonth, closingYear, mainDebt, interest)
 
-            }
-            .addOnFailureListener {
-                Log.d(TAG, "getCostsFromFireStore: " + it.localizedMessage)
-            }
+        launch {
+            db.collection("Costs").whereEqualTo("firestore_document_no",payerInfo.firestore_document_no).get()
+                .addOnSuccessListener { result ->
+                    val documents = result.documents
+                    costList.addAll(castCostData(documents))
+                    calculateCosts(costList, closingMonth, closingYear, mainDebt, interest)
+
+                }
+                .addOnFailureListener {
+                    payerLiveDataStatusMessage.postValue(it.localizedMessage)
+                }
+        }
        return costList
     }
 
