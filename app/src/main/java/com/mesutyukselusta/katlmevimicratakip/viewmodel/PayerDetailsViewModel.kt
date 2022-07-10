@@ -145,7 +145,7 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
         val createdDate: Date = sdf.parse(now)
         val currentDate: Date = sdf.parse(documentCreatedDay)
 
-        val dayDiffWithTime = currentDate.time - createdDate.time
+        val dayDiffWithTime = createdDate.time - currentDate.time
         val resultDayDiff = TimeUnit.DAYS.convert(dayDiffWithTime, TimeUnit.MILLISECONDS)
         val dayOfYear = 365
 
