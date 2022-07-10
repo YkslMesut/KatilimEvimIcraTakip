@@ -8,23 +8,26 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.mesutyukselusta.katlmevimicratakip.db.PayerDatabase
 import com.mesutyukselusta.katlmevimicratakip.model.Costs
+import com.mesutyukselusta.katlmevimicratakip.model.PayerInfo
 import kotlinx.coroutines.launch
 
 class CostsViewModel(application: Application) : BaseViewModel(application) {
     private  val TAG = "CostViewModel"
     val costLiveData = MutableLiveData<List<Costs>>()
     val costStatusMessage = MutableLiveData<String>()
+    val costEmptyResultControl = MutableLiveData<Boolean>()
     val emptyCostList = ArrayList<Costs>()
+    private var totalCost : Int = 0
 
 
     private val db = Firebase.firestore
 
-    fun getCosts(fireStoreDocumentNo : String) {
+    /*fun getCosts(fireStoreDocumentNo : String) {
         launch {
             val costs = PayerDatabase(getApplication()).payerDao().getCostListInfo(fireStoreDocumentNo)
             showCosts(costs)
         }
-    }
+    }*/
 
     fun getCostsFromFireStore(fireStoreDocumentNo: String){
        launch {
@@ -33,9 +36,9 @@ class CostsViewModel(application: Application) : BaseViewModel(application) {
                    if (!result.isEmpty){
                        val documents = result.documents
                        showCosts(castCostData(documents))
+                       costEmptyResultControl.postValue(false)
                    } else {
-                       val emptyCost = "Hiç Masraf Bulunmamaktadır"
-                       costStatusMessage.postValue(emptyCost)
+                       costEmptyResultControl.postValue(true)
                        showCosts(emptyCostList)
 
                    }
@@ -60,13 +63,11 @@ class CostsViewModel(application: Application) : BaseViewModel(application) {
         }
     }*/
 
-    fun deleteCostFromFireStore(context: Context,cost: Costs){
+    fun deleteCostFromFireStore(cost: Costs){
       launch {
           db.collection("Costs").document(cost.firestore_cost_document_no).delete()
               .addOnSuccessListener {
-                  val success = "Başarıyla Masraf Silindi"
-                  costStatusMessage.postValue(success)
-                  getCostsFromFireStore(cost.firestore_document_no)
+                  deleteCostFromPayerFireStore(cost.firestore_document_no,cost)
               }.addOnFailureListener {
                   costStatusMessage.postValue(it.localizedMessage)
                   getCostsFromFireStore(cost.firestore_document_no)
@@ -74,6 +75,19 @@ class CostsViewModel(application: Application) : BaseViewModel(application) {
       }
     }
 
+    private fun deleteCostFromPayerFireStore(fireStoreDocumentNo: String,deletedCost : Costs){
+        val newPayerInfoCost = (totalCost - deletedCost.amount_of_expense!!) as Number
+        launch {
+            db.collection("PayerInfo").document(fireStoreDocumentNo).update("costs",newPayerInfoCost).addOnSuccessListener {
+                val success = "Başarıyla Masraf Silindi"
+                costStatusMessage.postValue(success)
+                getCostsFromFireStore(fireStoreDocumentNo)
+           }.addOnFailureListener {
+                costStatusMessage.postValue(it.localizedMessage)
+                getCostsFromFireStore(fireStoreDocumentNo)
+            }
+        }
+    }
     private fun castCostData(documents : List<DocumentSnapshot>) : ArrayList<Costs>{
         val costsList = ArrayList<Costs>()
 
@@ -88,6 +102,7 @@ class CostsViewModel(application: Application) : BaseViewModel(application) {
             val protestCost = document.get("protest_cost") as Boolean
             val fireStoreDocumentNo = document.get("firestore_document_no") as String
 
+            totalCost += amountOfExpense
 
             val cost = Costs(amountOfExpense,
                 costName,

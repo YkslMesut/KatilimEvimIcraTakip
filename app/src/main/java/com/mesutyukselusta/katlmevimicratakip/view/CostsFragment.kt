@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -96,16 +97,22 @@ class CostsFragment : Fragment() {
     }
 
     private fun observeLiveData() {
-        viewModel.costLiveData.observe(viewLifecycleOwner, Observer {costs->
+        viewModel.costLiveData.observe(viewLifecycleOwner) { costs ->
             if (costs.isNotEmpty()) {
                 binding.recyclerView.visibility = View.VISIBLE
                 binding.payersError.visibility = View.GONE
                 costAdapter.updateCostAdapter(costs)
             }
-        })
-        viewModel.costStatusMessage.observe(viewLifecycleOwner, Observer {errMessage->
-            showError(errMessage)
-        })
+        }
+        viewModel.costStatusMessage.observe(viewLifecycleOwner) { errMessage ->
+            Toast.makeText(context, errMessage, Toast.LENGTH_SHORT).show()
+        }
+
+        viewModel.costEmptyResultControl.observe(viewLifecycleOwner) { isEmpty ->
+            if (isEmpty) {
+                showEmptyError()
+            }
+        }
     }
 
     private fun adapterView(){
@@ -120,11 +127,11 @@ class CostsFragment : Fragment() {
                 when(direction){
                     ItemTouchHelper.LEFT ->{
                         val cost = costAdapter.getCostFromPosition(viewHolder.adapterPosition)
-                        viewModel.deleteCostFromFireStore(requireContext(),cost)
+                        viewModel.deleteCostFromFireStore(cost)
                     }
                     ItemTouchHelper.RIGHT ->{
                         val cost = costAdapter.getCostFromPosition(viewHolder.adapterPosition)
-                        viewModel.deleteCostFromFireStore(requireContext(),cost)
+                        viewModel.deleteCostFromFireStore(cost)
                     }
                 }
 
@@ -146,10 +153,11 @@ class CostsFragment : Fragment() {
 
     }
 
-    private fun showError(errorMessage : String) {
+    private fun showEmptyError() {
+        val emptyCost = "Hiç Masraf Bulunmamaktadır"
         binding.recyclerView.visibility = View.GONE
         binding.payersError.visibility = View.VISIBLE
-        binding.payersError.text = errorMessage
+        binding.payersError.text = emptyCost
     }
 
 
