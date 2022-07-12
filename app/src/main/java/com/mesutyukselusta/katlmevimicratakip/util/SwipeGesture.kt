@@ -14,6 +14,9 @@ abstract class SwipeGesture(context : Context) : ItemTouchHelper.SimpleCallback(
     private val deleteColor =  ContextCompat.getColor(context, R.color.white)
     private val deleteIcon = R.drawable.ic_baseline_delete_24
 
+    private val documentStatusColor =  ContextCompat.getColor(context, R.color.soft_purple)
+    private val documentStatusIcon = R.drawable.ic_baseline_swap_horizontal_circle_24
+
     override fun onMove(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
@@ -39,8 +42,10 @@ abstract class SwipeGesture(context : Context) : ItemTouchHelper.SimpleCallback(
             dY,
             actionState,
             isCurrentlyActive)
-            .addBackgroundColor(deleteColor)
-            .addActionIcon(deleteIcon)
+            .addSwipeRightBackgroundColor(deleteColor)
+            .addSwipeLeftBackgroundColor(documentStatusColor)
+            .addSwipeRightActionIcon(deleteIcon)
+            .addSwipeLeftActionIcon(documentStatusIcon)
             .create()
             .decorate()
 

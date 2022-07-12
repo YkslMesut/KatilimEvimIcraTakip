@@ -1,7 +1,6 @@
 package com.mesutyukselusta.katlmevimicratakip.view
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,15 +8,11 @@ import android.view.*
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.mesutyukselusta.katlmevimicratakip.R
 import com.mesutyukselusta.katlmevimicratakip.adapter.PayerAdapter
 import com.mesutyukselusta.katlmevimicratakip.databinding.FragmentPayerBinding

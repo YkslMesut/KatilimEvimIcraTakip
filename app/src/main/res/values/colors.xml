@@ -11,4 +11,5 @@
     <color name="card_color"></color>
     <color name="delete_color">#910031</color>
     <color name="soft_red">#F47174</color>
+    <color name="soft_purple">#888CBA</color>
 </resources>

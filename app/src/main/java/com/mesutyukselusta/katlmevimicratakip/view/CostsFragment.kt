@@ -6,7 +6,6 @@ import android.view.*
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -14,12 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mesutyukselusta.katlmevimicratakip.R
 import com.mesutyukselusta.katlmevimicratakip.adapter.CostAdapter
-import com.mesutyukselusta.katlmevimicratakip.adapter.PayerAdapter
 import com.mesutyukselusta.katlmevimicratakip.databinding.FragmentOpeningCostsBinding
 import com.mesutyukselusta.katlmevimicratakip.util.SwipeGesture
 import com.mesutyukselusta.katlmevimicratakip.viewmodel.CostsViewModel
-import java.math.BigDecimal
-import java.text.NumberFormat
 
 
 class CostsFragment : Fragment() {
