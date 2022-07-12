@@ -79,39 +79,39 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
     }
     private fun getPayerCosts(fireStoreDocumentNo: String){
 
-            launch {
-                db.collection("Costs").whereEqualTo("firestore_document_no",fireStoreDocumentNo).get()
-                    .addOnSuccessListener { result ->
-                        if (!result.isEmpty){
-                            val costList = castCostData(result.documents)
-                            deletePayersCosts(costList)
-                        } else {
-                            payersStatusMessage.postValue("Borçlu Başarıyla Silindi")
-                            getAllPayersFromFireStore()
-                        }
-                    }
-                    .addOnFailureListener {
-                        payersStatusMessage.postValue(it.localizedMessage)
+        launch {
+            db.collection("Costs").whereEqualTo("firestore_document_no",fireStoreDocumentNo).get()
+                .addOnSuccessListener { result ->
+                    if (!result.isEmpty){
+                        val costList = castCostData(result.documents)
+                        deletePayersCosts(costList)
+                    } else {
+                        payersStatusMessage.postValue("Borçlu Başarıyla Silindi")
                         getAllPayersFromFireStore()
                     }
-            }
+                }
+                .addOnFailureListener {
+                    payersStatusMessage.postValue(it.localizedMessage)
+                    getAllPayersFromFireStore()
+                }
+        }
     }
 
     private fun deletePayersCosts(costList : ArrayList<Costs>){
-       launch {
-           val deleteBatch = db.batch()
-           for (cost in costList) {
-               deleteBatch.delete(db.collection("Costs").document(cost.firestore_cost_document_no))
-           }
-           deleteBatch.commit()
-               .addOnSuccessListener {
-                   payersStatusMessage.postValue("Borçlu ve Masrafları Başarıyla Silindi")
-                   getAllPayersFromFireStore()
-               }.addOnFailureListener {
-                   payersStatusMessage.postValue("Borçlu Başarıyla Silindi Fakat Dosyanın Masrafları Sunucudan Silinemedi")
-                   getAllPayersFromFireStore()
-               }
-       }
+        launch {
+            val deleteBatch = db.batch()
+            for (cost in costList) {
+                deleteBatch.delete(db.collection("Costs").document(cost.firestore_cost_document_no))
+            }
+            deleteBatch.commit()
+                .addOnSuccessListener {
+                    payersStatusMessage.postValue("Borçlu ve Masrafları Başarıyla Silindi")
+                    getAllPayersFromFireStore()
+                }.addOnFailureListener {
+                    payersStatusMessage.postValue("Borçlu Başarıyla Silindi Fakat Dosyanın Masrafları Sunucudan Silinemedi")
+                    getAllPayersFromFireStore()
+                }
+        }
     }
 
     private fun castCostData(documents : List<DocumentSnapshot>) : ArrayList<Costs>{

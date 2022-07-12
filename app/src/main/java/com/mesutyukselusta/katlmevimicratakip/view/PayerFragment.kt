@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Button
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -32,7 +33,7 @@ class PayerFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
-            super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)
 
     }
 
@@ -167,21 +168,29 @@ class PayerFragment : Fragment() {
     }
 
     private fun documentStateDialog(selectedPayer : PayerInfo) : AlertDialog {
-        val alert = AlertDialog.Builder(requireContext())
-            .setMessage("Dosya Durumunu Seçiniz")
-            .setPositiveButton("Avans İadesi Bekleniyor") { dialog, which ->
-                viewModel.updateDocumentStatusFromFireStore(selectedPayer.firestore_document_no, "avans_iade")
-                dialog.dismiss()
-            }
-            .setNegativeButton("Dosya Kapandı") { dialog, which ->
-                viewModel.updateDocumentStatusFromFireStore(selectedPayer.firestore_document_no, "dosya_kapandı")
-
-                dialog.dismiss()
-            }
-            .setOnCancelListener {
-                viewModel.getAllPayersFromFireStore()
-            }
+        val alert = AlertDialog.Builder(requireContext(),R.style.CustomAlertDialog)
             .create()
+
+
+        val view = layoutInflater.inflate(R.layout.document_status_dialog,null)
+        val  btnDosyaAcik = view.findViewById<Button>(R.id.btnDosyaAcik)
+        val  btnDosyaKapali = view.findViewById<Button>(R.id.btnDosyaKapandi)
+        val  btnAvansIade = view.findViewById<Button>(R.id.btnAvansIade)
+        alert.setView(view)
+        btnDosyaAcik.setOnClickListener {
+            viewModel.updateDocumentStatusFromFireStore(selectedPayer.firestore_document_no, "new_document")
+            alert.dismiss()
+        }
+        btnDosyaKapali.setOnClickListener {
+            viewModel.updateDocumentStatusFromFireStore(selectedPayer.firestore_document_no, "dosya_kapandı")
+            alert.dismiss()
+        }
+        btnAvansIade.setOnClickListener {
+            viewModel.updateDocumentStatusFromFireStore(selectedPayer.firestore_document_no, "avans_iade")
+            alert.dismiss()
+        }
+        alert.setCanceledOnTouchOutside(false)
+        alert.show()
 
         return alert
     }

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:layout_margin="10dp"
+        android:textSize="20dp"
+        android:textColor="#000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dosya Durumunu Seçiniz"/>
+    <Button
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        android:layout_gravity="right"
+        android:background="@color/soft_yellow"
+        android:id="@+id/btnAvansIade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Avans iadesi bekleniyor"/>
+    <Button
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        android:layout_gravity="right"
+        android:id="@+id/btnDosyaKapandi"
+        android:background="@color/soft_red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dosya Kapandı"/>
+    <Button
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        android:layout_gravity="right"
+        android:background="@color/diamond_white"
+        android:id="@+id/btnDosyaAcik"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dosya Açık"/>
+
+</LinearLayout>
