@@ -72,6 +72,30 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
         return costList
     }
 
+    private fun calculateCostAndShowPayer(payerInfo: PayerInfo){
+        var totalCost = 0
+        launch {
+            db.collection("Costs").whereEqualTo("firestore_document_no",payerInfo.firestore_document_no).get()
+                .addOnSuccessListener { result ->
+                    if (!result.isEmpty){
+                        val documents = result.documents
+                        val costList = castCostData(documents)
+
+                        totalCost = calculateTotalCost(documents)
+                        payerInfo.tuition_fee = payerInfo.calculateTuitionFee(payerInfo.tracking_amount,
+                            payerInfo.is_foreclosure,calculateAdvanceFee(costList))
+                        payerInfo.costs = totalCost
+                        payerLiveData.postValue(payerInfo)
+                    } else {
+                        payerLiveData.postValue(payerInfo)
+                    }
+                }
+                .addOnFailureListener {
+                    payerLiveDataStatusMessage.postValue(it.localizedMessage)
+                }
+        }
+    }
+
 
     private fun showPayers(payer : PayerInfo) {
         calculateCostAndShowPayer(payer)
@@ -292,23 +316,7 @@ class PayerDetailsViewModel(application: Application) : BaseViewModel(applicatio
         return dataMap
     }
 
-    private fun calculateCostAndShowPayer(payerInfo: PayerInfo){
-        var totalCost = 0
-        launch {
-            db.collection("Costs").whereEqualTo("firestore_document_no",payerInfo.firestore_document_no).get()
-                .addOnSuccessListener { result ->
-                    if (!result.isEmpty){
-                        val documents = result.documents
-                        totalCost = calculateTotalCost(documents)
-                        payerInfo.costs = totalCost
-                    }
-                }
-                .addOnFailureListener {
-                    payerLiveDataStatusMessage.postValue(it.localizedMessage)
-                }
-            payerLiveData.postValue(payerInfo)
-        }
-    }
+
 
 
 

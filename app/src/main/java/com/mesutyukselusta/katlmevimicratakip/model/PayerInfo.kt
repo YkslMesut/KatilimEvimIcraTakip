@@ -83,7 +83,7 @@ data class PayerInfo(
          var  trackingPercentage = if (isForeclosure == true){
             4.55
         } else {
-            2.25
+            2.27
         }
          val  result =  (((trackingAmount * trackingPercentage)/100).toInt())- advanceFee
          return result
