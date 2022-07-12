@@ -45,9 +45,11 @@ class PayerAdapter(private val payerList : ArrayList<PayerInfo>): RecyclerView.A
             itemBinding.containerUuid.text = payerInfo.firestore_document_no
 
             if (payerInfo.document_status.equals("avans_iade")){
-                itemBinding.container.setBackgroundColor(Color.YELLOW)
+                itemBinding.container.setBackgroundColor(Color.parseColor("#EEEE9B"))
             } else if (payerInfo.document_status.equals("dosya_kapandı")){
-                itemBinding.container.setBackgroundColor(Color.RED)
+                itemBinding.container.setBackgroundColor(Color.parseColor("#F47174"))
+            } else {
+                itemBinding.container.setBackgroundColor(Color.TRANSPARENT)
             }
 
         }
