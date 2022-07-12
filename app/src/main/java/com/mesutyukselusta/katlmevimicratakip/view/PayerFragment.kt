@@ -176,7 +176,10 @@ class PayerFragment : Fragment() {
         val  btnDosyaAcik = view.findViewById<Button>(R.id.btnDosyaAcik)
         val  btnDosyaKapali = view.findViewById<Button>(R.id.btnDosyaKapandi)
         val  btnAvansIade = view.findViewById<Button>(R.id.btnAvansIade)
+        val  btnCancel  = view.findViewById<Button>(R.id.btnCancel)
+
         alert.setView(view)
+
         btnDosyaAcik.setOnClickListener {
             viewModel.updateDocumentStatusFromFireStore(selectedPayer.firestore_document_no, "new_document")
             alert.dismiss()
@@ -189,6 +192,11 @@ class PayerFragment : Fragment() {
             viewModel.updateDocumentStatusFromFireStore(selectedPayer.firestore_document_no, "avans_iade")
             alert.dismiss()
         }
+        btnCancel.setOnClickListener {
+            viewModel.getAllPayersFromFireStore()
+            alert.dismiss()
+        }
+
         alert.setCanceledOnTouchOutside(false)
         alert.show()
 
