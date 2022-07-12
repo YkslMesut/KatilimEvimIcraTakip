@@ -175,11 +175,11 @@ class PayerFragment : Fragment() {
         val alert = AlertDialog.Builder(requireContext())
             .setMessage("Dosya Durumunu Seçiniz")
             .setPositiveButton("Avans İadesi Bekleniyor") { dialog, which ->
-                viewModel.updateDocumentStatusFromFireStore(requireContext(),selectedPayer.firestore_document_no, "avans_iade")
+                viewModel.updateDocumentStatusFromFireStore(selectedPayer.firestore_document_no, "avans_iade")
                 dialog.dismiss()
             }
             .setNegativeButton("Dosya Kapandı") { dialog, which ->
-                viewModel.updateDocumentStatusFromFireStore(requireContext(),selectedPayer.firestore_document_no, "dosya_kapandı")
+                viewModel.updateDocumentStatusFromFireStore(selectedPayer.firestore_document_no, "dosya_kapandı")
 
                 dialog.dismiss()
             }

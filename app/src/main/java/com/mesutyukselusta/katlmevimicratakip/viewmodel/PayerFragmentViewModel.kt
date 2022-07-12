@@ -1,15 +1,12 @@
 package com.mesutyukselusta.katlmevimicratakip.viewmodel
 
 import android.app.Application
-import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.mesutyukselusta.katlmevimicratakip.db.PayerDatabase
+import com.mesutyukselusta.katlmevimicratakip.model.Costs
 import com.mesutyukselusta.katlmevimicratakip.model.PayerInfo
 import kotlinx.coroutines.launch
 
@@ -71,9 +68,7 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
     fun deletePayerFromFireStore(fireStoreDocumentNo: String){
         launch {
             db.collection("PayerInfo").document(fireStoreDocumentNo).delete().addOnSuccessListener {
-                payersStatusMessage.postValue("Borçlu Başarıyla Silindi")
-                getAllPayersFromFireStore()
-
+                getPayerCosts(fireStoreDocumentNo)
             } . addOnFailureListener {
                 payersStatusMessage.postValue(it.localizedMessage)
                 getAllPayersFromFireStore()
@@ -81,6 +76,72 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
             }
         }
 
+    }
+    private fun getPayerCosts(fireStoreDocumentNo: String){
+
+            launch {
+                db.collection("Costs").whereEqualTo("firestore_document_no",fireStoreDocumentNo).get()
+                    .addOnSuccessListener { result ->
+                        if (!result.isEmpty){
+                            val costList = castCostData(result.documents)
+                            deletePayersCosts(costList)
+                        } else {
+                            payersStatusMessage.postValue("Borçlu Başarıyla Silindi")
+                            getAllPayersFromFireStore()
+                        }
+                    }
+                    .addOnFailureListener {
+                        payersStatusMessage.postValue(it.localizedMessage)
+                        getAllPayersFromFireStore()
+                    }
+            }
+    }
+
+    private fun deletePayersCosts(costList : ArrayList<Costs>){
+       launch {
+           val deleteBatch = db.batch()
+           for (cost in costList) {
+               deleteBatch.delete(db.collection("Costs").document(cost.firestore_cost_document_no))
+           }
+           deleteBatch.commit()
+               .addOnSuccessListener {
+                   payersStatusMessage.postValue("Borçlu ve Masrafları Başarıyla Silindi")
+                   getAllPayersFromFireStore()
+               }.addOnFailureListener {
+                   payersStatusMessage.postValue("Borçlu Başarıyla Silindi Fakat Dosyanın Masrafları Sunucudan Silinemedi")
+                   getAllPayersFromFireStore()
+               }
+       }
+    }
+
+    private fun castCostData(documents : List<DocumentSnapshot>) : ArrayList<Costs>{
+        val costsList = ArrayList<Costs>()
+
+        for (document in documents) {
+            val fireStoreCostDocumentNo = document.reference.path.substring(6)
+            val amountOfExpense = (document.get("amount_of_expense") as Number).toInt()
+            val dateDay = (document.get("date_day") as Number).toInt()
+            val dateMonth = (document.get("date_month") as Number).toInt()
+            val dateYear = (document.get("date_year") as Number).toInt()
+            val costName = document.get("cost_name") as String
+            val advanceFee = document.get("advance_fee") as Boolean
+            val protestCost = document.get("protest_cost") as Boolean
+            val fireStoreDocumentNo = document.get("firestore_document_no") as String
+
+
+            val cost = Costs(amountOfExpense,
+                costName,
+                dateDay,
+                dateMonth,
+                dateYear,
+                fireStoreDocumentNo,
+                advanceFee,
+                protestCost,
+                fireStoreCostDocumentNo)
+
+            costsList.add(cost)
+        }
+        return costsList
     }
 
 
@@ -93,7 +154,7 @@ class PayerFragmentViewModel(application: Application) : BaseViewModel(applicati
         }
     }*/
 
-    fun updateDocumentStatusFromFireStore(context: Context,fireStoreDocumentNo : String,documentStatus: String){
+    fun updateDocumentStatusFromFireStore(fireStoreDocumentNo : String,documentStatus: String){
         db.collection("PayerInfo").document(fireStoreDocumentNo).update("document_status",documentStatus).addOnSuccessListener {
             payersStatusMessage.postValue("Dosya Durumu Değiştirildi")
             getAllPayersFromFireStore()
